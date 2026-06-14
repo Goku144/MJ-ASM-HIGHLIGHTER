@@ -1,0 +1,182 @@
+{
+  "name": "mj-asm-highlighter",
+  "displayName": "MJ Asm Highlighter",
+  "description": "Advanced NASM x86_64 syntax highlighting for VS Code using semantic tokens and standard TextMate scopes.",
+  "version": "0.1.1",
+  "publisher": "mj",
+  "license": "MIT",
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onLanguage:nasmx64",
+    "onLanguage:asm",
+    "onStartupFinished"
+  ],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "nasm",
+    "assembly",
+    "asm",
+    "x86",
+    "x86_64",
+    "syntax"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "nasmx64",
+        "aliases": [
+          "NASM x86_64",
+          "NASM",
+          "x86_64 Assembly",
+          "ASM"
+        ],
+        "extensions": [
+          ".asm",
+          ".nasm",
+          ".inc"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "nasmx64",
+        "scopeName": "source.asm.nasmx64",
+        "path": "./syntaxes/nasm-x64.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "nasmx64",
+        "path": "./snippets/nasm-x64.code-snippets"
+      }
+    ],
+    "semanticTokenTypes": [
+      {
+        "id": "instruction",
+        "description": "NASM instruction",
+        "superType": "keyword"
+      },
+      {
+        "id": "register",
+        "description": "NASM register",
+        "superType": "variable"
+      },
+      {
+        "id": "section",
+        "description": "NASM section name",
+        "superType": "namespace"
+      },
+      {
+        "id": "macroConstant",
+        "description": "NASM macro constant defined by preprocessor",
+        "superType": "variable"
+      }
+    ],
+    "configurationDefaults": {
+      "editor.semanticHighlighting.enabled": true,
+      "editor.semanticTokenColorCustomizations": {
+        "rules": {
+          "instruction:nasmx64": "#C586C0",
+          "keyword:nasmx64": "#C586C0",
+          "register:nasmx64": "#569CD6",
+          "macroConstant:nasmx64": "#569CD6",
+          "macroConstant.declaration:nasmx64": "#569CD6",
+          "section:nasmx64": "#4FC1FF",
+          "operator:nasmx64": "#D7BA7D",
+          "function:nasmx64": "#DCDCAA",
+          "variable:nasmx64": "#9CDCFE",
+          "variable.declaration:nasmx64": "#9CDCFE",
+          "type:nasmx64": "#4EC9B0",
+          "parameter:nasmx64": "#9CDCFE",
+          "number:nasmx64": "#B5CEA8",
+          "string:nasmx64": "#CE9178"
+        }
+      },
+      "editor.tokenColorCustomizations": {
+        "textMateRules": [
+          {
+            "scope": [
+              "punctuation.definition.directive.asm.nasm",
+              "punctuation.definition.macro.asm.nasm",
+              "punctuation.definition.preprocessor.asm.nasm"
+            ],
+            "settings": {
+              "foreground": "#D7BA7D"
+            }
+          },
+          {
+            "scope": [
+              "entity.name.function.asm.nasm"
+            ],
+            "settings": {
+              "foreground": "#DCDCAA"
+            }
+          },
+          {
+            "scope": [
+              "entity.name.variable.asm.nasm",
+              "variable.other.asm.nasm",
+              "variable.other.symbol.asm.nasm",
+              "variable.other.declaration.asm.nasm"
+            ],
+            "settings": {
+              "foreground": "#9CDCFE"
+            }
+          },
+          {
+            "scope": [
+              "entity.name.section.asm.nasm"
+            ],
+            "settings": {
+              "foreground": "#4FC1FF"
+            }
+          },
+          {
+            "scope": [
+              "entity.name.constant.preprocessor.asm.nasm",
+              "entity.name.constant.asm.nasm",
+              "constant.other.asm.nasm",
+              "constant.other.preprocessor.asm.nasm"
+            ],
+            "settings": {
+              "foreground": "#569CD6"
+            }
+          },
+          {
+            "scope": [
+              "variable.language.register.asm.nasm",
+              "support.variable.register.asm.nasm"
+            ],
+            "settings": {
+              "foreground": "#569CD6"
+            }
+          },
+          {
+            "scope": [
+              "keyword.mnemonic.asm.nasm",
+              "keyword.other.instruction.asm.nasm"
+            ],
+            "settings": {
+              "foreground": "#C586C0"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node scripts/validate.js",
+    "validate": "node scripts/validate.js",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.6.0",
+    "jsonc-parser": "^3.3.1"
+  }
+}

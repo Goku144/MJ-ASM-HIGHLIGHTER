@@ -1,0 +1,3526 @@
+{
+  "mov": {
+    "kind": "instruction",
+    "title": "mov",
+    "category": "Instruction",
+    "description": "Copies data from a source operand to a destination operand.",
+    "syntax": [
+      "mov destination, source"
+    ],
+    "examples": [
+      "mov rax, rbx",
+      "mov qword [counter], 10"
+    ],
+    "opcode": "Varies by operand form. Common forms include 88 /r, 89 /r, 8A /r, 8B /r, B8+rd.",
+    "notes": [
+      "Memory-to-memory moves are not allowed except for string instructions.",
+      "Operand sizes must be compatible."
+    ],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/mov"
+      }
+    ]
+  },
+  "lea": {
+    "kind": "instruction",
+    "title": "lea",
+    "category": "Instruction",
+    "description": "Loads an effective address into a general-purpose register.",
+    "syntax": [
+      "lea register, [address-expression]"
+    ],
+    "examples": [
+      "lea rdi, [rel message]"
+    ],
+    "opcode": "8D /r.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/lea"
+      }
+    ]
+  },
+  "push": {
+    "kind": "instruction",
+    "title": "push",
+    "category": "Instruction",
+    "description": "Pushes an operand onto the stack.",
+    "syntax": [
+      "push source"
+    ],
+    "examples": [
+      "push rbp"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/push"
+      }
+    ]
+  },
+  "pop": {
+    "kind": "instruction",
+    "title": "pop",
+    "category": "Instruction",
+    "description": "Pops a stack value into the destination operand.",
+    "syntax": [
+      "pop destination"
+    ],
+    "examples": [
+      "pop rbp"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/pop"
+      }
+    ]
+  },
+  "add": {
+    "kind": "instruction",
+    "title": "add",
+    "category": "Instruction",
+    "description": "Adds source to destination.",
+    "syntax": [
+      "add destination, source"
+    ],
+    "examples": [
+      "add rax, 8"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/add"
+      }
+    ]
+  },
+  "sub": {
+    "kind": "instruction",
+    "title": "sub",
+    "category": "Instruction",
+    "description": "Subtracts source from destination.",
+    "syntax": [
+      "sub destination, source"
+    ],
+    "examples": [
+      "sub rsp, 32"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/sub"
+      }
+    ]
+  },
+  "xor": {
+    "kind": "instruction",
+    "title": "xor",
+    "category": "Instruction",
+    "description": "Computes bitwise exclusive OR.",
+    "syntax": [
+      "xor destination, source"
+    ],
+    "examples": [
+      "xor rdi, rdi"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/xor"
+      }
+    ]
+  },
+  "or": {
+    "kind": "instruction",
+    "title": "or",
+    "category": "Instruction",
+    "description": "Computes bitwise OR.",
+    "syntax": [
+      "or destination, source"
+    ],
+    "examples": [
+      "or rax, 1"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/or"
+      }
+    ]
+  },
+  "and": {
+    "kind": "instruction",
+    "title": "and",
+    "category": "Instruction",
+    "description": "Computes bitwise AND.",
+    "syntax": [
+      "and destination, source"
+    ],
+    "examples": [
+      "and rsp, -16"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/and"
+      }
+    ]
+  },
+  "cmp": {
+    "kind": "instruction",
+    "title": "cmp",
+    "category": "Instruction",
+    "description": "Compares operands by setting flags from a subtraction result.",
+    "syntax": [
+      "cmp left, right"
+    ],
+    "examples": [
+      "cmp rax, 0"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/cmp"
+      }
+    ]
+  },
+  "test": {
+    "kind": "instruction",
+    "title": "test",
+    "category": "Instruction",
+    "description": "Computes bitwise AND for flags only.",
+    "syntax": [
+      "test left, right"
+    ],
+    "examples": [
+      "test rax, rax"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/test"
+      }
+    ]
+  },
+  "inc": {
+    "kind": "instruction",
+    "title": "inc",
+    "category": "Instruction",
+    "description": "Increments an operand by one.",
+    "syntax": [
+      "inc destination"
+    ],
+    "examples": [
+      "inc rcx"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/inc"
+      }
+    ]
+  },
+  "dec": {
+    "kind": "instruction",
+    "title": "dec",
+    "category": "Instruction",
+    "description": "Decrements an operand by one.",
+    "syntax": [
+      "dec destination"
+    ],
+    "examples": [
+      "dec rcx"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/dec"
+      }
+    ]
+  },
+  "jmp": {
+    "kind": "instruction",
+    "title": "jmp",
+    "category": "Instruction",
+    "description": "Transfers control unconditionally.",
+    "syntax": [
+      "jmp target"
+    ],
+    "examples": [
+      "jmp .done"
+    ],
+    "opcode": "Varies by short, near, or far form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/jmp"
+      }
+    ]
+  },
+  "je": {
+    "kind": "instruction",
+    "title": "je",
+    "category": "Instruction",
+    "description": "Jumps when zero/equal.",
+    "syntax": [
+      "je target"
+    ],
+    "examples": [
+      "je .equal"
+    ],
+    "opcode": "Varies by short or near form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/je"
+      }
+    ]
+  },
+  "jne": {
+    "kind": "instruction",
+    "title": "jne",
+    "category": "Instruction",
+    "description": "Jumps when not zero/not equal.",
+    "syntax": [
+      "jne target"
+    ],
+    "examples": [
+      "jne .not_equal"
+    ],
+    "opcode": "Varies by short or near form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/jne"
+      }
+    ]
+  },
+  "call": {
+    "kind": "instruction",
+    "title": "call",
+    "category": "Instruction",
+    "description": "Calls a procedure and saves a return address.",
+    "syntax": [
+      "call target"
+    ],
+    "examples": [
+      "call helper"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/call"
+      }
+    ]
+  },
+  "ret": {
+    "kind": "instruction",
+    "title": "ret",
+    "category": "Instruction",
+    "description": "Returns from a procedure.",
+    "syntax": [
+      "ret [imm16]"
+    ],
+    "examples": [
+      "ret"
+    ],
+    "opcode": "C3 for near return; other forms vary.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/ret"
+      }
+    ]
+  },
+  "syscall": {
+    "kind": "instruction",
+    "title": "syscall",
+    "category": "Instruction",
+    "description": "Enters an operating-system syscall handler in 64-bit mode.",
+    "syntax": [
+      "syscall"
+    ],
+    "examples": [
+      "mov rax, 60\nsyscall"
+    ],
+    "opcode": "0F 05.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/syscall"
+      }
+    ]
+  },
+  "int": {
+    "kind": "instruction",
+    "title": "int",
+    "category": "Instruction",
+    "description": "Calls a software interrupt handler.",
+    "syntax": [
+      "int imm8"
+    ],
+    "examples": [
+      "int 0x80"
+    ],
+    "opcode": "CD ib.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/int"
+      }
+    ]
+  },
+  "enter": {
+    "kind": "instruction",
+    "title": "enter",
+    "category": "Instruction",
+    "description": "Creates a stack frame.",
+    "syntax": [
+      "enter size, nesting-level"
+    ],
+    "examples": [
+      "enter 16, 0"
+    ],
+    "opcode": "C8 iw ib.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/enter"
+      }
+    ]
+  },
+  "leave": {
+    "kind": "instruction",
+    "title": "leave",
+    "category": "Instruction",
+    "description": "Releases a stack frame.",
+    "syntax": [
+      "leave"
+    ],
+    "examples": [
+      "leave\nret"
+    ],
+    "opcode": "C9.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/leave"
+      }
+    ]
+  },
+  "nop": {
+    "kind": "instruction",
+    "title": "nop",
+    "category": "Instruction",
+    "description": "No operation.",
+    "syntax": [
+      "nop"
+    ],
+    "examples": [
+      "nop"
+    ],
+    "opcode": "90 for the one-byte form; multi-byte forms vary.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/nop"
+      }
+    ]
+  },
+  "cpuid": {
+    "kind": "instruction",
+    "title": "cpuid",
+    "category": "Instruction",
+    "description": "Returns processor identification and feature information.",
+    "syntax": [
+      "cpuid"
+    ],
+    "examples": [
+      "mov eax, 1\ncpuid"
+    ],
+    "opcode": "0F A2.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/cpuid"
+      }
+    ]
+  },
+  "rdtsc": {
+    "kind": "instruction",
+    "title": "rdtsc",
+    "category": "Instruction",
+    "description": "Reads the time-stamp counter into EDX:EAX.",
+    "syntax": [
+      "rdtsc"
+    ],
+    "examples": [
+      "rdtsc"
+    ],
+    "opcode": "0F 31.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/rdtsc"
+      }
+    ]
+  },
+  "lfence": {
+    "kind": "instruction",
+    "title": "lfence",
+    "category": "Instruction",
+    "description": "Serializes load operations.",
+    "syntax": [
+      "lfence"
+    ],
+    "examples": [
+      "lfence"
+    ],
+    "opcode": "0F AE E8.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/lfence"
+      }
+    ]
+  },
+  "sfence": {
+    "kind": "instruction",
+    "title": "sfence",
+    "category": "Instruction",
+    "description": "Serializes store operations.",
+    "syntax": [
+      "sfence"
+    ],
+    "examples": [
+      "sfence"
+    ],
+    "opcode": "0F AE F8.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/sfence"
+      }
+    ]
+  },
+  "mfence": {
+    "kind": "instruction",
+    "title": "mfence",
+    "category": "Instruction",
+    "description": "Serializes load and store memory operations.",
+    "syntax": [
+      "mfence"
+    ],
+    "examples": [
+      "mfence"
+    ],
+    "opcode": "0F AE F0.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/mfence"
+      }
+    ]
+  },
+  "pause": {
+    "kind": "instruction",
+    "title": "pause",
+    "category": "Instruction",
+    "description": "Spin-wait hint.",
+    "syntax": [
+      "pause"
+    ],
+    "examples": [
+      "pause"
+    ],
+    "opcode": "F3 90.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/pause"
+      }
+    ]
+  },
+  "ud2": {
+    "kind": "instruction",
+    "title": "ud2",
+    "category": "Instruction",
+    "description": "Guaranteed undefined instruction.",
+    "syntax": [
+      "ud2"
+    ],
+    "examples": [
+      "ud2"
+    ],
+    "opcode": "0F 0B.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/ud2"
+      }
+    ]
+  },
+  "lock": {
+    "kind": "instruction",
+    "title": "lock",
+    "category": "Instruction",
+    "description": "Atomic read-modify-write instruction prefix.",
+    "syntax": [
+      "lock instruction"
+    ],
+    "examples": [
+      "lock inc qword [counter]"
+    ],
+    "opcode": "F0 prefix.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/lock"
+      }
+    ]
+  },
+  "rep": {
+    "kind": "instruction",
+    "title": "rep",
+    "category": "Instruction",
+    "description": "Repeat prefix for string instructions.",
+    "syntax": [
+      "rep string-instruction"
+    ],
+    "examples": [
+      "rep movsb"
+    ],
+    "opcode": "F3 prefix.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/rep"
+      }
+    ]
+  },
+  "movsb": {
+    "kind": "instruction",
+    "title": "movsb",
+    "category": "Instruction",
+    "description": "Moves one byte from RSI/ESI/SI to RDI/EDI/DI.",
+    "syntax": [
+      "movsb"
+    ],
+    "examples": [
+      "rep movsb"
+    ],
+    "opcode": "A4.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/movsb"
+      }
+    ]
+  },
+  "stosb": {
+    "kind": "instruction",
+    "title": "stosb",
+    "category": "Instruction",
+    "description": "Stores AL to the byte at RDI/EDI/DI.",
+    "syntax": [
+      "stosb"
+    ],
+    "examples": [
+      "rep stosb"
+    ],
+    "opcode": "AA.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/stosb"
+      }
+    ]
+  },
+  "lodsb": {
+    "kind": "instruction",
+    "title": "lodsb",
+    "category": "Instruction",
+    "description": "Loads a byte at RSI/ESI/SI into AL.",
+    "syntax": [
+      "lodsb"
+    ],
+    "examples": [
+      "lodsb"
+    ],
+    "opcode": "AC.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/lodsb"
+      }
+    ]
+  },
+  "scasb": {
+    "kind": "instruction",
+    "title": "scasb",
+    "category": "Instruction",
+    "description": "Compares AL with byte at RDI/EDI/DI.",
+    "syntax": [
+      "scasb"
+    ],
+    "examples": [
+      "repne scasb"
+    ],
+    "opcode": "AE.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/scasb"
+      }
+    ]
+  },
+  "finit": {
+    "kind": "instruction",
+    "title": "finit",
+    "category": "Instruction",
+    "description": "Initializes the x87 FPU.",
+    "syntax": [
+      "finit"
+    ],
+    "examples": [
+      "finit"
+    ],
+    "opcode": "9B DB E3.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/finit"
+      }
+    ]
+  },
+  "fld": {
+    "kind": "instruction",
+    "title": "fld",
+    "category": "Instruction",
+    "description": "Loads a floating-point value onto the x87 stack.",
+    "syntax": [
+      "fld source"
+    ],
+    "examples": [
+      "fld qword [value]"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/fld"
+      }
+    ]
+  },
+  "fstp": {
+    "kind": "instruction",
+    "title": "fstp",
+    "category": "Instruction",
+    "description": "Stores x87 ST0 and pops the register stack.",
+    "syntax": [
+      "fstp destination"
+    ],
+    "examples": [
+      "fstp qword [value]"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/fstp"
+      }
+    ]
+  },
+  "fadd": {
+    "kind": "instruction",
+    "title": "fadd",
+    "category": "Instruction",
+    "description": "Adds floating-point operands using x87.",
+    "syntax": [
+      "fadd destination, source"
+    ],
+    "examples": [
+      "fadd st0, st1"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/fadd"
+      }
+    ]
+  },
+  "movq": {
+    "kind": "instruction",
+    "title": "movq",
+    "category": "Instruction",
+    "description": "Moves a quadword to or from MMX/SSE registers.",
+    "syntax": [
+      "movq destination, source"
+    ],
+    "examples": [
+      "movq xmm0, rax"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/movq"
+      }
+    ]
+  },
+  "movdqa": {
+    "kind": "instruction",
+    "title": "movdqa",
+    "category": "Instruction",
+    "description": "Moves aligned double quadword SIMD data.",
+    "syntax": [
+      "movdqa destination, source"
+    ],
+    "examples": [
+      "movdqa xmm0, [vector]"
+    ],
+    "opcode": "66 0F 6F /r or 66 0F 7F /r forms.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/movdqa"
+      }
+    ]
+  },
+  "addps": {
+    "kind": "instruction",
+    "title": "addps",
+    "category": "Instruction",
+    "description": "Adds packed single-precision floating-point values.",
+    "syntax": [
+      "addps xmm1, xmm2/m128"
+    ],
+    "examples": [
+      "addps xmm0, xmm1"
+    ],
+    "opcode": "0F 58 /r.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/addps"
+      }
+    ]
+  },
+  "vpxor": {
+    "kind": "instruction",
+    "title": "vpxor",
+    "category": "Instruction",
+    "description": "Computes bitwise XOR on vector integer operands.",
+    "syntax": [
+      "vpxor destination, source1, source2"
+    ],
+    "examples": [
+      "vpxor ymm0, ymm0, ymm0"
+    ],
+    "opcode": "VEX/EVEX encoded; opcode map varies by form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/vpxor"
+      }
+    ]
+  },
+  "vaddps": {
+    "kind": "instruction",
+    "title": "vaddps",
+    "category": "Instruction",
+    "description": "Adds packed single-precision floating-point values with AVX encoding.",
+    "syntax": [
+      "vaddps destination, source1, source2"
+    ],
+    "examples": [
+      "vaddps ymm0, ymm1, ymm2"
+    ],
+    "opcode": "VEX/EVEX encoded; opcode map varies by form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/vaddps"
+      }
+    ]
+  },
+  "kmovw": {
+    "kind": "instruction",
+    "title": "kmovw",
+    "category": "Instruction",
+    "description": "Moves a word to or from an AVX-512 opmask register.",
+    "syntax": [
+      "kmovw destination, source"
+    ],
+    "examples": [
+      "kmovw k1, eax"
+    ],
+    "opcode": "VEX/EVEX encoded; opcode varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/kmovw"
+      }
+    ]
+  },
+  "ktestw": {
+    "kind": "instruction",
+    "title": "ktestw",
+    "category": "Instruction",
+    "description": "Tests AVX-512 opmask bits and sets flags.",
+    "syntax": [
+      "ktestw k1, k2"
+    ],
+    "examples": [
+      "ktestw k1, k1"
+    ],
+    "opcode": "VEX encoded; opcode form varies.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/ktestw"
+      }
+    ]
+  },
+  "xadd": {
+    "kind": "instruction",
+    "title": "xadd",
+    "category": "Instruction",
+    "description": "Exchanges and adds operands atomically when used with LOCK.",
+    "syntax": [
+      "xadd destination, source"
+    ],
+    "examples": [
+      "lock xadd [counter], eax"
+    ],
+    "opcode": "Varies by operand size.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/xadd"
+      }
+    ]
+  },
+  "bts": {
+    "kind": "instruction",
+    "title": "bts",
+    "category": "Instruction",
+    "description": "Stores selected bit in CF and sets the bit.",
+    "syntax": [
+      "bts destination, bit"
+    ],
+    "examples": [
+      "bts rax, 3"
+    ],
+    "opcode": "Varies by operand form.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/bts"
+      }
+    ]
+  },
+  "aesenc": {
+    "kind": "instruction",
+    "title": "aesenc",
+    "category": "Instruction",
+    "description": "Performs one AES encryption round.",
+    "syntax": [
+      "aesenc xmm1, xmm2/m128"
+    ],
+    "examples": [
+      "aesenc xmm0, xmm1"
+    ],
+    "opcode": "66 0F 38 DC /r.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/aesenc"
+      }
+    ]
+  },
+  "rax": {
+    "kind": "register",
+    "title": "rax",
+    "category": "Register - general purpose, 64-bit",
+    "description": "rax is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "rax"
+    ],
+    "examples": [
+      "mov rax, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "rbx": {
+    "kind": "register",
+    "title": "rbx",
+    "category": "Register - general purpose, 64-bit",
+    "description": "rbx is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "rbx"
+    ],
+    "examples": [
+      "mov rbx, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "rcx": {
+    "kind": "register",
+    "title": "rcx",
+    "category": "Register - general purpose, 64-bit",
+    "description": "rcx is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "rcx"
+    ],
+    "examples": [
+      "mov rcx, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "rdx": {
+    "kind": "register",
+    "title": "rdx",
+    "category": "Register - general purpose, 64-bit",
+    "description": "rdx is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "rdx"
+    ],
+    "examples": [
+      "mov rdx, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "rsi": {
+    "kind": "register",
+    "title": "rsi",
+    "category": "Register - general purpose, 64-bit",
+    "description": "rsi is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "rsi"
+    ],
+    "examples": [
+      "mov rsi, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "rdi": {
+    "kind": "register",
+    "title": "rdi",
+    "category": "Register - general purpose, 64-bit",
+    "description": "rdi is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "rdi"
+    ],
+    "examples": [
+      "mov rdi, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "rbp": {
+    "kind": "register",
+    "title": "rbp",
+    "category": "Register - general purpose, 64-bit",
+    "description": "rbp is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "rbp"
+    ],
+    "examples": [
+      "mov rbp, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "rsp": {
+    "kind": "register",
+    "title": "rsp",
+    "category": "Register - general purpose, 64-bit",
+    "description": "rsp is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "rsp"
+    ],
+    "examples": [
+      "mov rsp, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "rip": {
+    "kind": "register",
+    "title": "rip",
+    "category": "Register - general purpose, 64-bit",
+    "description": "rip is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "rip"
+    ],
+    "examples": [
+      "mov rax, [rel label]"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "eax": {
+    "kind": "register",
+    "title": "eax",
+    "category": "Register - general purpose, 32-bit",
+    "description": "eax is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "eax"
+    ],
+    "examples": [
+      "mov eax, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "ebx": {
+    "kind": "register",
+    "title": "ebx",
+    "category": "Register - general purpose, 32-bit",
+    "description": "ebx is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "ebx"
+    ],
+    "examples": [
+      "mov ebx, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "ecx": {
+    "kind": "register",
+    "title": "ecx",
+    "category": "Register - general purpose, 32-bit",
+    "description": "ecx is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "ecx"
+    ],
+    "examples": [
+      "mov ecx, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "edx": {
+    "kind": "register",
+    "title": "edx",
+    "category": "Register - general purpose, 32-bit",
+    "description": "edx is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "edx"
+    ],
+    "examples": [
+      "mov edx, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "ax": {
+    "kind": "register",
+    "title": "ax",
+    "category": "Register - general purpose, 16-bit",
+    "description": "ax is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "ax"
+    ],
+    "examples": [
+      "mov ax, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "bx": {
+    "kind": "register",
+    "title": "bx",
+    "category": "Register - general purpose, 16-bit",
+    "description": "bx is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "bx"
+    ],
+    "examples": [
+      "mov bx, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "cx": {
+    "kind": "register",
+    "title": "cx",
+    "category": "Register - general purpose, 16-bit",
+    "description": "cx is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "cx"
+    ],
+    "examples": [
+      "mov cx, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "dx": {
+    "kind": "register",
+    "title": "dx",
+    "category": "Register - general purpose, 16-bit",
+    "description": "dx is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "dx"
+    ],
+    "examples": [
+      "mov dx, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "al": {
+    "kind": "register",
+    "title": "al",
+    "category": "Register - general purpose, 8-bit",
+    "description": "al is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "al"
+    ],
+    "examples": [
+      "mov al, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "bl": {
+    "kind": "register",
+    "title": "bl",
+    "category": "Register - general purpose, 8-bit",
+    "description": "bl is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "bl"
+    ],
+    "examples": [
+      "mov bl, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "cl": {
+    "kind": "register",
+    "title": "cl",
+    "category": "Register - general purpose, 8-bit",
+    "description": "cl is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "cl"
+    ],
+    "examples": [
+      "mov cl, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "dl": {
+    "kind": "register",
+    "title": "dl",
+    "category": "Register - general purpose, 8-bit",
+    "description": "dl is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "dl"
+    ],
+    "examples": [
+      "mov dl, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "cs": {
+    "kind": "register",
+    "title": "cs",
+    "category": "Register - segment",
+    "description": "cs is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "cs"
+    ],
+    "examples": [
+      "mov cs, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "ds": {
+    "kind": "register",
+    "title": "ds",
+    "category": "Register - segment",
+    "description": "ds is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "ds"
+    ],
+    "examples": [
+      "mov ds, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "es": {
+    "kind": "register",
+    "title": "es",
+    "category": "Register - segment",
+    "description": "es is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "es"
+    ],
+    "examples": [
+      "mov es, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "fs": {
+    "kind": "register",
+    "title": "fs",
+    "category": "Register - segment",
+    "description": "fs is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "fs"
+    ],
+    "examples": [
+      "mov fs, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "gs": {
+    "kind": "register",
+    "title": "gs",
+    "category": "Register - segment",
+    "description": "gs is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "gs"
+    ],
+    "examples": [
+      "mov gs, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "ss": {
+    "kind": "register",
+    "title": "ss",
+    "category": "Register - segment",
+    "description": "ss is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "ss"
+    ],
+    "examples": [
+      "mov ss, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "cr0": {
+    "kind": "register",
+    "title": "cr0",
+    "category": "Register - control",
+    "description": "cr0 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "cr0"
+    ],
+    "examples": [
+      "mov cr0, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "cr2": {
+    "kind": "register",
+    "title": "cr2",
+    "category": "Register - control",
+    "description": "cr2 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "cr2"
+    ],
+    "examples": [
+      "mov cr2, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "cr3": {
+    "kind": "register",
+    "title": "cr3",
+    "category": "Register - control",
+    "description": "cr3 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "cr3"
+    ],
+    "examples": [
+      "mov cr3, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "cr4": {
+    "kind": "register",
+    "title": "cr4",
+    "category": "Register - control",
+    "description": "cr4 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "cr4"
+    ],
+    "examples": [
+      "mov cr4, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "cr8": {
+    "kind": "register",
+    "title": "cr8",
+    "category": "Register - control",
+    "description": "cr8 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "cr8"
+    ],
+    "examples": [
+      "mov cr8, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "dr0": {
+    "kind": "register",
+    "title": "dr0",
+    "category": "Register - debug",
+    "description": "dr0 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "dr0"
+    ],
+    "examples": [
+      "mov dr0, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "dr1": {
+    "kind": "register",
+    "title": "dr1",
+    "category": "Register - debug",
+    "description": "dr1 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "dr1"
+    ],
+    "examples": [
+      "mov dr1, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "dr2": {
+    "kind": "register",
+    "title": "dr2",
+    "category": "Register - debug",
+    "description": "dr2 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "dr2"
+    ],
+    "examples": [
+      "mov dr2, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "dr3": {
+    "kind": "register",
+    "title": "dr3",
+    "category": "Register - debug",
+    "description": "dr3 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "dr3"
+    ],
+    "examples": [
+      "mov dr3, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "dr6": {
+    "kind": "register",
+    "title": "dr6",
+    "category": "Register - debug",
+    "description": "dr6 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "dr6"
+    ],
+    "examples": [
+      "mov dr6, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "dr7": {
+    "kind": "register",
+    "title": "dr7",
+    "category": "Register - debug",
+    "description": "dr7 is an x86/x86-64 register operand recognized by NASM.",
+    "syntax": [
+      "dr7"
+    ],
+    "examples": [
+      "mov dr7, 0"
+    ],
+    "opcode": "Not applicable. Registers are operands, not instructions.",
+    "notes": [],
+    "references": [
+      {
+        "name": "Intel x86 instruction reference",
+        "url": "https://www.felixcloutier.com/x86/"
+      }
+    ]
+  },
+  "bits": {
+    "kind": "directive",
+    "title": "bits",
+    "category": "NASM assembler directive",
+    "description": "BITS is a NASM assembler directive.",
+    "syntax": [
+      "bits ..."
+    ],
+    "examples": [
+      "bits ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "default": {
+    "kind": "directive",
+    "title": "default",
+    "category": "NASM assembler directive",
+    "description": "DEFAULT is a NASM assembler directive.",
+    "syntax": [
+      "default ..."
+    ],
+    "examples": [
+      "default ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "cpu": {
+    "kind": "directive",
+    "title": "cpu",
+    "category": "NASM assembler directive",
+    "description": "CPU is a NASM assembler directive.",
+    "syntax": [
+      "cpu ..."
+    ],
+    "examples": [
+      "cpu ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "section": {
+    "kind": "directive",
+    "title": "section",
+    "category": "NASM assembler directive",
+    "description": "SECTION is a NASM assembler directive.",
+    "syntax": [
+      "section ..."
+    ],
+    "examples": [
+      "section ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "segment": {
+    "kind": "directive",
+    "title": "segment",
+    "category": "NASM assembler directive",
+    "description": "SEGMENT is a NASM assembler directive.",
+    "syntax": [
+      "segment ..."
+    ],
+    "examples": [
+      "segment ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "global": {
+    "kind": "directive",
+    "title": "global",
+    "category": "NASM assembler directive",
+    "description": "GLOBAL is a NASM assembler directive.",
+    "syntax": [
+      "global ..."
+    ],
+    "examples": [
+      "global ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "extern": {
+    "kind": "directive",
+    "title": "extern",
+    "category": "NASM assembler directive",
+    "description": "EXTERN is a NASM assembler directive.",
+    "syntax": [
+      "extern ..."
+    ],
+    "examples": [
+      "extern ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "org": {
+    "kind": "directive",
+    "title": "org",
+    "category": "NASM assembler directive",
+    "description": "ORG is a NASM assembler directive.",
+    "syntax": [
+      "org ..."
+    ],
+    "examples": [
+      "org ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "absolute": {
+    "kind": "directive",
+    "title": "absolute",
+    "category": "NASM assembler directive",
+    "description": "ABSOLUTE is a NASM assembler directive.",
+    "syntax": [
+      "absolute ..."
+    ],
+    "examples": [
+      "absolute ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "common": {
+    "kind": "directive",
+    "title": "common",
+    "category": "NASM assembler directive",
+    "description": "COMMON is a NASM assembler directive.",
+    "syntax": [
+      "common ..."
+    ],
+    "examples": [
+      "common ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "group": {
+    "kind": "directive",
+    "title": "group",
+    "category": "NASM assembler directive",
+    "description": "GROUP is a NASM assembler directive.",
+    "syntax": [
+      "group ..."
+    ],
+    "examples": [
+      "group ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "align": {
+    "kind": "directive",
+    "title": "align",
+    "category": "NASM assembler directive",
+    "description": "ALIGN is a NASM assembler directive.",
+    "syntax": [
+      "align ..."
+    ],
+    "examples": [
+      "align ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "alignb": {
+    "kind": "directive",
+    "title": "alignb",
+    "category": "NASM assembler directive",
+    "description": "ALIGNB is a NASM assembler directive.",
+    "syntax": [
+      "alignb ..."
+    ],
+    "examples": [
+      "alignb ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "struc": {
+    "kind": "directive",
+    "title": "struc",
+    "category": "NASM assembler directive",
+    "description": "STRUC is a NASM assembler directive.",
+    "syntax": [
+      "struc ..."
+    ],
+    "examples": [
+      "struc ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "endstruc": {
+    "kind": "directive",
+    "title": "endstruc",
+    "category": "NASM assembler directive",
+    "description": "ENDSTRUC is a NASM assembler directive.",
+    "syntax": [
+      "endstruc ..."
+    ],
+    "examples": [
+      "endstruc ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "istruc": {
+    "kind": "directive",
+    "title": "istruc",
+    "category": "NASM assembler directive",
+    "description": "ISTRUC is a NASM assembler directive.",
+    "syntax": [
+      "istruc ..."
+    ],
+    "examples": [
+      "istruc ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "iend": {
+    "kind": "directive",
+    "title": "iend",
+    "category": "NASM assembler directive",
+    "description": "IEND is a NASM assembler directive.",
+    "syntax": [
+      "iend ..."
+    ],
+    "examples": [
+      "iend ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "at": {
+    "kind": "directive",
+    "title": "at",
+    "category": "NASM assembler directive",
+    "description": "AT is a NASM assembler directive.",
+    "syntax": [
+      "at ..."
+    ],
+    "examples": [
+      "at ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "%define": {
+    "kind": "preprocessor",
+    "title": "%define",
+    "category": "NASM preprocessor directive",
+    "description": "%define is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%define ..."
+    ],
+    "examples": [
+      "%define SYS_EXIT 60"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%xdefine": {
+    "kind": "preprocessor",
+    "title": "%xdefine",
+    "category": "NASM preprocessor directive",
+    "description": "%xdefine is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%xdefine ..."
+    ],
+    "examples": [
+      "%xdefine ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%idefine": {
+    "kind": "preprocessor",
+    "title": "%idefine",
+    "category": "NASM preprocessor directive",
+    "description": "%idefine is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%idefine ..."
+    ],
+    "examples": [
+      "%idefine ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%assign": {
+    "kind": "preprocessor",
+    "title": "%assign",
+    "category": "NASM preprocessor directive",
+    "description": "%assign is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%assign ..."
+    ],
+    "examples": [
+      "%assign ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%iassign": {
+    "kind": "preprocessor",
+    "title": "%iassign",
+    "category": "NASM preprocessor directive",
+    "description": "%iassign is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%iassign ..."
+    ],
+    "examples": [
+      "%iassign ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%undef": {
+    "kind": "preprocessor",
+    "title": "%undef",
+    "category": "NASM preprocessor directive",
+    "description": "%undef is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%undef ..."
+    ],
+    "examples": [
+      "%undef ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%macro": {
+    "kind": "preprocessor",
+    "title": "%macro",
+    "category": "NASM preprocessor directive",
+    "description": "%macro is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%macro ..."
+    ],
+    "examples": [
+      "%macro ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%imacro": {
+    "kind": "preprocessor",
+    "title": "%imacro",
+    "category": "NASM preprocessor directive",
+    "description": "%imacro is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%imacro ..."
+    ],
+    "examples": [
+      "%imacro ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%endmacro": {
+    "kind": "preprocessor",
+    "title": "%endmacro",
+    "category": "NASM preprocessor directive",
+    "description": "%endmacro is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%endmacro ..."
+    ],
+    "examples": [
+      "%endmacro ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%rep": {
+    "kind": "preprocessor",
+    "title": "%rep",
+    "category": "NASM preprocessor directive",
+    "description": "%rep is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%rep ..."
+    ],
+    "examples": [
+      "%rep ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%endrep": {
+    "kind": "preprocessor",
+    "title": "%endrep",
+    "category": "NASM preprocessor directive",
+    "description": "%endrep is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%endrep ..."
+    ],
+    "examples": [
+      "%endrep ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%if": {
+    "kind": "preprocessor",
+    "title": "%if",
+    "category": "NASM preprocessor directive",
+    "description": "%if is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%if ..."
+    ],
+    "examples": [
+      "%if ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%ifdef": {
+    "kind": "preprocessor",
+    "title": "%ifdef",
+    "category": "NASM preprocessor directive",
+    "description": "%ifdef is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%ifdef ..."
+    ],
+    "examples": [
+      "%ifdef ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%ifndef": {
+    "kind": "preprocessor",
+    "title": "%ifndef",
+    "category": "NASM preprocessor directive",
+    "description": "%ifndef is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%ifndef ..."
+    ],
+    "examples": [
+      "%ifndef ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%elif": {
+    "kind": "preprocessor",
+    "title": "%elif",
+    "category": "NASM preprocessor directive",
+    "description": "%elif is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%elif ..."
+    ],
+    "examples": [
+      "%elif ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%elifdef": {
+    "kind": "preprocessor",
+    "title": "%elifdef",
+    "category": "NASM preprocessor directive",
+    "description": "%elifdef is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%elifdef ..."
+    ],
+    "examples": [
+      "%elifdef ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%elifndef": {
+    "kind": "preprocessor",
+    "title": "%elifndef",
+    "category": "NASM preprocessor directive",
+    "description": "%elifndef is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%elifndef ..."
+    ],
+    "examples": [
+      "%elifndef ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%else": {
+    "kind": "preprocessor",
+    "title": "%else",
+    "category": "NASM preprocessor directive",
+    "description": "%else is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%else ..."
+    ],
+    "examples": [
+      "%else ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%endif": {
+    "kind": "preprocessor",
+    "title": "%endif",
+    "category": "NASM preprocessor directive",
+    "description": "%endif is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%endif ..."
+    ],
+    "examples": [
+      "%endif ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%include": {
+    "kind": "preprocessor",
+    "title": "%include",
+    "category": "NASM preprocessor directive",
+    "description": "%include is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%include ..."
+    ],
+    "examples": [
+      "%include ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%error": {
+    "kind": "preprocessor",
+    "title": "%error",
+    "category": "NASM preprocessor directive",
+    "description": "%error is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%error ..."
+    ],
+    "examples": [
+      "%error ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%warning": {
+    "kind": "preprocessor",
+    "title": "%warning",
+    "category": "NASM preprocessor directive",
+    "description": "%warning is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%warning ..."
+    ],
+    "examples": [
+      "%warning ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%fatal": {
+    "kind": "preprocessor",
+    "title": "%fatal",
+    "category": "NASM preprocessor directive",
+    "description": "%fatal is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%fatal ..."
+    ],
+    "examples": [
+      "%fatal ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%push": {
+    "kind": "preprocessor",
+    "title": "%push",
+    "category": "NASM preprocessor directive",
+    "description": "%push is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%push ..."
+    ],
+    "examples": [
+      "%push ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%pop": {
+    "kind": "preprocessor",
+    "title": "%pop",
+    "category": "NASM preprocessor directive",
+    "description": "%pop is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%pop ..."
+    ],
+    "examples": [
+      "%pop ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%rotate": {
+    "kind": "preprocessor",
+    "title": "%rotate",
+    "category": "NASM preprocessor directive",
+    "description": "%rotate is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%rotate ..."
+    ],
+    "examples": [
+      "%rotate ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%strlen": {
+    "kind": "preprocessor",
+    "title": "%strlen",
+    "category": "NASM preprocessor directive",
+    "description": "%strlen is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%strlen ..."
+    ],
+    "examples": [
+      "%strlen ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%substr": {
+    "kind": "preprocessor",
+    "title": "%substr",
+    "category": "NASM preprocessor directive",
+    "description": "%substr is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%substr ..."
+    ],
+    "examples": [
+      "%substr ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%local": {
+    "kind": "preprocessor",
+    "title": "%local",
+    "category": "NASM preprocessor directive",
+    "description": "%local is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%local ..."
+    ],
+    "examples": [
+      "%local ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "%line": {
+    "kind": "preprocessor",
+    "title": "%line",
+    "category": "NASM preprocessor directive",
+    "description": "%line is handled by the NASM preprocessor before assembly.",
+    "syntax": [
+      "%line ..."
+    ],
+    "examples": [
+      "%line ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc4.html"
+      }
+    ]
+  },
+  "db": {
+    "kind": "data",
+    "title": "db",
+    "category": "Data declaration",
+    "description": "DB declares or reserves data in NASM source.",
+    "syntax": [
+      "db ..."
+    ],
+    "examples": [
+      "message: db \"Hello\", 10, 0"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "dw": {
+    "kind": "data",
+    "title": "dw",
+    "category": "Data declaration",
+    "description": "DW declares or reserves data in NASM source.",
+    "syntax": [
+      "dw ..."
+    ],
+    "examples": [
+      "dw ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "dd": {
+    "kind": "data",
+    "title": "dd",
+    "category": "Data declaration",
+    "description": "DD declares or reserves data in NASM source.",
+    "syntax": [
+      "dd ..."
+    ],
+    "examples": [
+      "dd ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "dq": {
+    "kind": "data",
+    "title": "dq",
+    "category": "Data declaration",
+    "description": "DQ declares or reserves data in NASM source.",
+    "syntax": [
+      "dq ..."
+    ],
+    "examples": [
+      "dq ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "dt": {
+    "kind": "data",
+    "title": "dt",
+    "category": "Data declaration",
+    "description": "DT declares or reserves data in NASM source.",
+    "syntax": [
+      "dt ..."
+    ],
+    "examples": [
+      "dt ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "do": {
+    "kind": "data",
+    "title": "do",
+    "category": "Data declaration",
+    "description": "DO declares or reserves data in NASM source.",
+    "syntax": [
+      "do ..."
+    ],
+    "examples": [
+      "do ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "dy": {
+    "kind": "data",
+    "title": "dy",
+    "category": "Data declaration",
+    "description": "DY declares or reserves data in NASM source.",
+    "syntax": [
+      "dy ..."
+    ],
+    "examples": [
+      "dy ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "dz": {
+    "kind": "data",
+    "title": "dz",
+    "category": "Data declaration",
+    "description": "DZ declares or reserves data in NASM source.",
+    "syntax": [
+      "dz ..."
+    ],
+    "examples": [
+      "dz ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "resb": {
+    "kind": "data",
+    "title": "resb",
+    "category": "Data declaration",
+    "description": "RESB declares or reserves data in NASM source.",
+    "syntax": [
+      "resb ..."
+    ],
+    "examples": [
+      "resb ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "resw": {
+    "kind": "data",
+    "title": "resw",
+    "category": "Data declaration",
+    "description": "RESW declares or reserves data in NASM source.",
+    "syntax": [
+      "resw ..."
+    ],
+    "examples": [
+      "resw ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "resd": {
+    "kind": "data",
+    "title": "resd",
+    "category": "Data declaration",
+    "description": "RESD declares or reserves data in NASM source.",
+    "syntax": [
+      "resd ..."
+    ],
+    "examples": [
+      "resd ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "resq": {
+    "kind": "data",
+    "title": "resq",
+    "category": "Data declaration",
+    "description": "RESQ declares or reserves data in NASM source.",
+    "syntax": [
+      "resq ..."
+    ],
+    "examples": [
+      "resq ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "resy": {
+    "kind": "data",
+    "title": "resy",
+    "category": "Data declaration",
+    "description": "RESY declares or reserves data in NASM source.",
+    "syntax": [
+      "resy ..."
+    ],
+    "examples": [
+      "resy ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "resz": {
+    "kind": "data",
+    "title": "resz",
+    "category": "Data declaration",
+    "description": "RESZ declares or reserves data in NASM source.",
+    "syntax": [
+      "resz ..."
+    ],
+    "examples": [
+      "resz ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "equ": {
+    "kind": "data",
+    "title": "equ",
+    "category": "Data declaration",
+    "description": "EQU declares or reserves data in NASM source.",
+    "syntax": [
+      "equ ..."
+    ],
+    "examples": [
+      "equ ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "times": {
+    "kind": "data",
+    "title": "times",
+    "category": "Data declaration",
+    "description": "TIMES declares or reserves data in NASM source.",
+    "syntax": [
+      "times ..."
+    ],
+    "examples": [
+      "times ..."
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "byte": {
+    "kind": "size",
+    "title": "byte",
+    "category": "Size/address specifier",
+    "description": "byte guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "byte ..."
+    ],
+    "examples": [
+      "byte ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "word": {
+    "kind": "size",
+    "title": "word",
+    "category": "Size/address specifier",
+    "description": "word guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "word ..."
+    ],
+    "examples": [
+      "word ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "dword": {
+    "kind": "size",
+    "title": "dword",
+    "category": "Size/address specifier",
+    "description": "dword guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "dword ..."
+    ],
+    "examples": [
+      "dword ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "qword": {
+    "kind": "size",
+    "title": "qword",
+    "category": "Size/address specifier",
+    "description": "qword guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "qword ..."
+    ],
+    "examples": [
+      "mov rax, qword [value]"
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "tword": {
+    "kind": "size",
+    "title": "tword",
+    "category": "Size/address specifier",
+    "description": "tword guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "tword ..."
+    ],
+    "examples": [
+      "tword ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "oword": {
+    "kind": "size",
+    "title": "oword",
+    "category": "Size/address specifier",
+    "description": "oword guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "oword ..."
+    ],
+    "examples": [
+      "oword ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "yword": {
+    "kind": "size",
+    "title": "yword",
+    "category": "Size/address specifier",
+    "description": "yword guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "yword ..."
+    ],
+    "examples": [
+      "yword ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "zword": {
+    "kind": "size",
+    "title": "zword",
+    "category": "Size/address specifier",
+    "description": "zword guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "zword ..."
+    ],
+    "examples": [
+      "zword ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "ptr": {
+    "kind": "size",
+    "title": "ptr",
+    "category": "Size/address specifier",
+    "description": "ptr guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "ptr ..."
+    ],
+    "examples": [
+      "ptr ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "rel": {
+    "kind": "size",
+    "title": "rel",
+    "category": "Size/address specifier",
+    "description": "rel guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "rel ..."
+    ],
+    "examples": [
+      "rel ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "abs": {
+    "kind": "size",
+    "title": "abs",
+    "category": "Size/address specifier",
+    "description": "abs guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "abs ..."
+    ],
+    "examples": [
+      "abs ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "strict": {
+    "kind": "size",
+    "title": "strict",
+    "category": "Size/address specifier",
+    "description": "strict guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "strict ..."
+    ],
+    "examples": [
+      "strict ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "short": {
+    "kind": "size",
+    "title": "short",
+    "category": "Size/address specifier",
+    "description": "short guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "short ..."
+    ],
+    "examples": [
+      "short ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "near": {
+    "kind": "size",
+    "title": "near",
+    "category": "Size/address specifier",
+    "description": "near guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "near ..."
+    ],
+    "examples": [
+      "near ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "far": {
+    "kind": "size",
+    "title": "far",
+    "category": "Size/address specifier",
+    "description": "far guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "far ..."
+    ],
+    "examples": [
+      "far ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  "wrt": {
+    "kind": "size",
+    "title": "wrt",
+    "category": "Size/address specifier",
+    "description": "wrt guides NASM operand size, address form, or relocation selection.",
+    "syntax": [
+      "wrt ..."
+    ],
+    "examples": [
+      "wrt ..."
+    ],
+    "opcode": "Not applicable. Size specifiers guide assembly.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc3.html"
+      }
+    ]
+  },
+  ".text": {
+    "kind": "section",
+    "title": ".text",
+    "category": "Section name",
+    "description": ".text is a common section name used in NASM source.",
+    "syntax": [
+      "section .text"
+    ],
+    "examples": [
+      "section .text"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc8.html"
+      }
+    ]
+  },
+  ".data": {
+    "kind": "section",
+    "title": ".data",
+    "category": "Section name",
+    "description": ".data is a common section name used in NASM source.",
+    "syntax": [
+      "section .data"
+    ],
+    "examples": [
+      "section .data"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc8.html"
+      }
+    ]
+  },
+  ".bss": {
+    "kind": "section",
+    "title": ".bss",
+    "category": "Section name",
+    "description": ".bss is a common section name used in NASM source.",
+    "syntax": [
+      "section .bss"
+    ],
+    "examples": [
+      "section .bss"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc8.html"
+      }
+    ]
+  },
+  ".rodata": {
+    "kind": "section",
+    "title": ".rodata",
+    "category": "Section name",
+    "description": ".rodata is a common section name used in NASM source.",
+    "syntax": [
+      "section .rodata"
+    ],
+    "examples": [
+      "section .rodata"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc8.html"
+      }
+    ]
+  },
+  ".rdata": {
+    "kind": "section",
+    "title": ".rdata",
+    "category": "Section name",
+    "description": ".rdata is a common section name used in NASM source.",
+    "syntax": [
+      "section .rdata"
+    ],
+    "examples": [
+      "section .rdata"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc8.html"
+      }
+    ]
+  },
+  ".init": {
+    "kind": "section",
+    "title": ".init",
+    "category": "Section name",
+    "description": ".init is a common section name used in NASM source.",
+    "syntax": [
+      "section .init"
+    ],
+    "examples": [
+      "section .init"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc8.html"
+      }
+    ]
+  },
+  ".fini": {
+    "kind": "section",
+    "title": ".fini",
+    "category": "Section name",
+    "description": ".fini is a common section name used in NASM source.",
+    "syntax": [
+      "section .fini"
+    ],
+    "examples": [
+      "section .fini"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc8.html"
+      }
+    ]
+  },
+  ".note.gnu-stack": {
+    "kind": "section",
+    "title": ".note.gnu-stack",
+    "category": "Section name",
+    "description": ".note.GNU-stack is a common section name used in NASM source.",
+    "syntax": [
+      "section .note.GNU-stack"
+    ],
+    "examples": [
+      "section .note.GNU-stack"
+    ],
+    "opcode": "Not applicable. This is an assembler directive.",
+    "notes": [],
+    "references": [
+      {
+        "name": "NASM documentation",
+        "url": "https://www.nasm.us/xdoc/2.16.03/html/nasmdoc8.html"
+      }
+    ]
+  }
+}
