@@ -1,6 +1,7 @@
 .git/**
 .gitignore
 .vscode/**
+/icon.png
 node_modules/**
 scripts/**
 *.vsix
