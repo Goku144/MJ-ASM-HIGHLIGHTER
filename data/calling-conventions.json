@@ -1,0 +1,19 @@
+{
+  "systemVAMD64": {
+    "name": "System V AMD64",
+    "integerArguments": ["rdi", "rsi", "rdx", "rcx", "r8", "r9"],
+    "returnValues": ["rax", "rdx"],
+    "callerSaved": ["rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11"],
+    "calleeSaved": ["rbx", "rbp", "r12", "r13", "r14", "r15"],
+    "stackAlignment": "Before `call`, the stack must be aligned so the callee sees 16-byte alignment after the return address is pushed.",
+    "notes": ["Used by Linux, macOS, BSD, and many Unix-like x86-64 targets."]
+  },
+  "linuxSyscallX86_64": {
+    "name": "Linux x86-64 syscall",
+    "number": "rax",
+    "arguments": ["rdi", "rsi", "rdx", "r10", "r8", "r9"],
+    "returnValue": "rax",
+    "clobbered": ["rcx", "r11"],
+    "notes": ["Unlike System V function calls, syscall argument 4 is `r10`, not `rcx`."]
+  }
+}

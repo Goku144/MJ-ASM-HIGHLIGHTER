@@ -9,6 +9,7 @@
     { "include": "#preprocessor" },
     { "include": "#macroDefinitions" },
     { "include": "#macroParameters" },
+    { "include": "#globalDeclarations" },
     { "include": "#dataSections" },
     { "include": "#equDefinitions" },
     { "include": "#labels" },
@@ -75,7 +76,7 @@
           "match": "^\\s*(%)(?i:(define|xdefine|idefine|assign|iassign|undef|defstr|idefstr|deftok|ideftok))\\b\\s+([A-Za-z_.$?@][A-Za-z0-9_.$?@]*)",
           "captures": {
             "1": { "name": "punctuation.definition.directive.asm.nasm punctuation.definition.preprocessor.asm.nasm" },
-            "2": { "name": "keyword.control.directive.asm.nasm" },
+            "2": { "name": "keyword.control.directive.preprocessor.asm.nasm keyword.control.directive.asm.nasm" },
             "3": { "name": "entity.name.constant.preprocessor.asm.nasm constant.other.preprocessor.asm.nasm" }
           }
         },
@@ -84,7 +85,7 @@
           "match": "(%)(?i:(include|use))\\b",
           "captures": {
             "1": { "name": "punctuation.definition.directive.asm.nasm punctuation.definition.preprocessor.asm.nasm" },
-            "2": { "name": "keyword.control.import.include.asm.nasm keyword.control.directive.asm.nasm" }
+            "2": { "name": "keyword.control.include.preprocessor.asm.nasm keyword.control.import.include.asm.nasm keyword.control.directive.asm.nasm" }
           }
         },
         {
@@ -92,7 +93,7 @@
           "match": "^\\s*(%)(?i:(if|ifn|ifdef|ifndef|ifmacro|ifnmacro|ifctx|ifnctx|ifidn|ifnidn|ifidni|ifnidni|ifid|ifnid|ifnum|ifnnum|ifstr|ifnstr|iftoken|ifntoken|ifempty|ifnempty|elif|elifn|elifdef|elifndef|elifmacro|elifnmacro|elifctx|elifnctx|elifidn|elifnidn|elifidni|elifnidni|elifid|elifnid|elifnum|elifnnum|elifstr|elifnstr|eliftoken|elifntoken|elifempty|elifnempty))\\b\\s+([A-Za-z_.$?@][A-Za-z0-9_.$?@]*)",
           "captures": {
             "1": { "name": "punctuation.definition.directive.asm.nasm punctuation.definition.preprocessor.asm.nasm" },
-            "2": { "name": "keyword.control.directive.asm.nasm keyword.control.preprocessor.asm.nasm" },
+            "2": { "name": "keyword.control.conditional.preprocessor.asm.nasm keyword.control.directive.preprocessor.asm.nasm keyword.control.preprocessor.asm.nasm keyword.control.directive.asm.nasm" },
             "3": { "name": "entity.name.constant.preprocessor.asm.nasm constant.other.preprocessor.asm.nasm" }
           }
         },
@@ -101,7 +102,7 @@
           "match": "(%)(?i:(define|xdefine|idefine|assign|iassign|defstr|idefstr|deftok|ideftok|undef|endmacro|exitmacro|if|ifn|ifdef|ifndef|ifmacro|ifnmacro|ifctx|ifnctx|ifidn|ifnidn|ifidni|ifnidni|ifid|ifnid|ifnum|ifnnum|ifstr|ifnstr|iftoken|ifntoken|ifempty|ifnempty|elif|elifn|elifdef|elifndef|elifmacro|elifnmacro|elifctx|elifnctx|elifidn|elifnidn|elifidni|elifnidni|elifid|elifnid|elifnum|elifnnum|elifstr|elifnstr|eliftoken|elifntoken|elifempty|elifnempty|else|endif|pathsearch|depend|rep|endrep|rotate|push|pop|repl|arg|stacksize|local|line|error|warning|fatal|pragma|substr|strlen))\\b",
           "captures": {
             "1": { "name": "punctuation.definition.directive.asm.nasm punctuation.definition.preprocessor.asm.nasm" },
-            "2": { "name": "keyword.control.directive.asm.nasm keyword.control.preprocessor.asm.nasm" }
+            "2": { "name": "keyword.control.directive.preprocessor.asm.nasm keyword.control.preprocessor.asm.nasm keyword.control.directive.asm.nasm" }
           }
         }
       ]
@@ -113,7 +114,7 @@
           "match": "(?i)^(\\s*)(%)(macro|imacro)\\s+([A-Za-z_.$?@][A-Za-z0-9_.$?@]*)",
           "captures": {
             "2": { "name": "punctuation.definition.directive.asm.nasm punctuation.definition.macro.asm.nasm punctuation.definition.preprocessor.asm.nasm" },
-            "3": { "name": "keyword.control.directive.asm.nasm" },
+            "3": { "name": "keyword.control.directive.preprocessor.asm.nasm keyword.control.directive.asm.nasm" },
             "4": { "name": "entity.name.function.asm.nasm entity.name.function.macro.asm.nasm" }
           }
         }
@@ -126,7 +127,7 @@
           "match": "^\\s*(%)(?i:(define|xdefine|idefine|assign|iassign|undef|defstr|idefstr|deftok|ideftok))\\b\\s+([A-Za-z_.$?@][A-Za-z0-9_.$?@]*)",
           "captures": {
             "1": { "name": "punctuation.definition.directive.asm.nasm punctuation.definition.preprocessor.asm.nasm" },
-            "2": { "name": "keyword.control.directive.asm.nasm" },
+            "2": { "name": "keyword.control.directive.preprocessor.asm.nasm keyword.control.directive.asm.nasm" },
             "3": { "name": "entity.name.constant.preprocessor.asm.nasm constant.other.preprocessor.asm.nasm" }
           }
         }
@@ -135,28 +136,104 @@
     "macroParameters": {
       "patterns": [
         {
-          "name": "meta.macro.local.asm.nasm",
+          "name": "variable.other.label.local.macro.reference.asm.nasm variable.other.label.local.macro.nasm",
           "match": "(%%)([A-Za-z_.$?@][A-Za-z0-9_.$?@]*)(?!:)",
           "captures": {
             "1": { "name": "punctuation.definition.macro.asm.nasm punctuation.definition.preprocessor.asm.nasm" },
-            "2": { "name": "variable.parameter.macro.asm.nasm" }
+            "2": { "name": "variable.other.label.local.macro.reference.asm.nasm variable.other.label.local.macro.nasm" }
           }
         },
         {
-          "name": "meta.macro.parameter.asm.nasm",
+          "name": "variable.parameter.macro.asm.nasm variable.parameter.macro.nasm",
           "match": "(%)(\\*|[+-]?\\d+)",
           "captures": {
             "1": { "name": "punctuation.definition.macro.asm.nasm punctuation.definition.preprocessor.asm.nasm" },
-            "2": { "name": "variable.parameter.macro.asm.nasm" }
+            "2": { "name": "variable.parameter.macro.nasm variable.parameter.macro.asm.nasm" }
           }
+        }
+      ]
+    },
+    "globalDeclarations": {
+      "patterns": [
+        {
+          "name": "meta.declaration.global.asm.nasm",
+          "begin": "(?i)^\\s*(global)\\b",
+          "beginCaptures": {
+            "1": { "name": "storage.modifier.global.asm.nasm keyword.control.directive.asm.nasm" }
+          },
+          "end": "$",
+          "patterns": [
+            { "include": "#comments" },
+            {
+              "name": "storage.modifier.symbol-attribute.function.asm.nasm storage.modifier.symbol-attribute.nasm",
+              "match": "(?i):function\\b"
+            },
+            {
+              "name": "storage.modifier.symbol-attribute.data.asm.nasm storage.modifier.symbol-attribute.nasm",
+              "match": "(?i):data\\b"
+            },
+            {
+              "name": "entity.name.symbol.asm.nasm variable.other.asm.nasm variable.other.symbol.asm.nasm entity.name.variable.asm.nasm",
+              "match": "[A-Za-z_.$?@][A-Za-z0-9_.$?@]*"
+            },
+            { "include": "#operators" }
+          ]
+        },
+        {
+          "name": "meta.declaration.extern.asm.nasm",
+          "begin": "(?i)^\\s*(extern)\\b",
+          "beginCaptures": {
+            "1": { "name": "storage.modifier.extern.asm.nasm keyword.control.directive.asm.nasm" }
+          },
+          "end": "$",
+          "patterns": [
+            { "include": "#comments" },
+            {
+              "name": "storage.modifier.symbol-attribute.function.asm.nasm storage.modifier.symbol-attribute.nasm",
+              "match": "(?i):function\\b"
+            },
+            {
+              "name": "storage.modifier.symbol-attribute.data.asm.nasm storage.modifier.symbol-attribute.nasm",
+              "match": "(?i):data\\b"
+            },
+            {
+              "name": "entity.name.symbol.asm.nasm variable.other.asm.nasm variable.other.symbol.asm.nasm entity.name.variable.asm.nasm",
+              "match": "[A-Za-z_.$?@][A-Za-z0-9_.$?@]*"
+            },
+            { "include": "#operators" }
+          ]
         }
       ]
     },
     "labels": {
       "patterns": [
         {
+          "name": "entity.name.label.local.macro.asm.nasm entity.name.label.local.macro.nasm",
+          "match": "^\\s*(%%[A-Za-z_.$?@][A-Za-z0-9_.$?@]*)(:)",
+          "captures": {
+            "1": { "name": "entity.name.label.local.macro.asm.nasm entity.name.label.local.macro.nasm" },
+            "2": { "name": "punctuation.separator.label.asm.nasm" }
+          }
+        },
+        {
+          "name": "entity.name.label.numeric.asm.nasm entity.name.label.numeric.nasm",
+          "match": "^\\s*(\\d+)(:)",
+          "captures": {
+            "1": { "name": "entity.name.label.numeric.asm.nasm entity.name.label.numeric.nasm" },
+            "2": { "name": "punctuation.separator.label.asm.nasm" }
+          }
+        },
+        {
+          "name": "entity.name.label.local.asm.nasm",
+          "match": "^\\s*(\\.[A-Za-z_.$?@][A-Za-z0-9_.$?@]*)(:)",
+          "captures": {
+            "1": { "name": "entity.name.label.local.asm.nasm" },
+            "2": { "name": "punctuation.separator.label.asm.nasm" }
+          }
+        },
+        {
           "name": "meta.label.asm.nasm",
-          "match": "^\\s*((?:%%|\\.)?[A-Za-z_.$?@][A-Za-z0-9_.$?@]*)(:)",
+          "match": "^\\s*([A-Za-z_.$?@][A-Za-z0-9_.$?@]*)(:)",
           "captures": {
             "1": { "name": "entity.name.function.asm.nasm entity.name.label.asm.nasm" },
             "2": { "name": "punctuation.separator.label.asm.nasm" }
@@ -170,7 +247,7 @@
           "name": "meta.section.data.asm.nasm",
           "begin": "(?i)^\\s*(section|segment)\\s+(\\.(?:data|bss|rodata|rdata)(?:[._-][A-Za-z0-9_.-]+)?)\\b",
           "beginCaptures": {
-            "1": { "name": "keyword.control.directive.asm.nasm" },
+            "1": { "name": "keyword.directive.section.asm.nasm keyword.control.directive.asm.nasm" },
             "2": { "name": "entity.name.section.asm.nasm" }
           },
           "end": "(?i)(?=^\\s*(?:section|segment)\\s+\\.[A-Za-z0-9_.-]+\\b)",
@@ -180,9 +257,12 @@
             { "include": "#preprocessor" },
             { "include": "#macroDefinitions" },
             { "include": "#macroParameters" },
+            { "include": "#globalDeclarations" },
             { "include": "#equDefinitions" },
             { "include": "#dataLabels" },
+            { "include": "#labels" },
             { "include": "#sectionNames" },
+            { "include": "#sectionAttributes" },
             { "include": "#numbers" },
             { "include": "#registers" },
             { "include": "#instructions" },
@@ -199,8 +279,32 @@
     "dataLabels": {
       "patterns": [
         {
+          "name": "entity.name.label.local.macro.asm.nasm entity.name.label.local.macro.nasm",
+          "match": "^\\s*(%%[A-Za-z_.$?@][A-Za-z0-9_.$?@]*)(:)",
+          "captures": {
+            "1": { "name": "entity.name.label.local.macro.asm.nasm entity.name.label.local.macro.nasm" },
+            "2": { "name": "punctuation.separator.label.asm.nasm" }
+          }
+        },
+        {
+          "name": "entity.name.label.numeric.asm.nasm entity.name.label.numeric.nasm",
+          "match": "^\\s*(\\d+)(:)",
+          "captures": {
+            "1": { "name": "entity.name.label.numeric.asm.nasm entity.name.label.numeric.nasm" },
+            "2": { "name": "punctuation.separator.label.asm.nasm" }
+          }
+        },
+        {
+          "name": "entity.name.label.local.asm.nasm",
+          "match": "^\\s*(\\.[A-Za-z_.$?@][A-Za-z0-9_.$?@]*)(:)",
+          "captures": {
+            "1": { "name": "entity.name.label.local.asm.nasm" },
+            "2": { "name": "punctuation.separator.label.asm.nasm" }
+          }
+        },
+        {
           "name": "meta.label.data.asm.nasm",
-          "match": "^\\s*((?:%%|\\.)?[A-Za-z_.$?@][A-Za-z0-9_.$?@]*)(:)",
+          "match": "^\\s*([A-Za-z_.$?@][A-Za-z0-9_.$?@]*)(:)",
           "captures": {
             "1": { "name": "entity.name.variable.asm.nasm variable.other.declaration.asm.nasm entity.name.label.asm.nasm" },
             "2": { "name": "punctuation.separator.label.asm.nasm" }
@@ -215,7 +319,7 @@
           "match": "^\\s*([A-Za-z_.$?@][A-Za-z0-9_.$?@]*)\\s+(?i:(equ))\\b",
           "captures": {
             "1": { "name": "entity.name.constant.asm.nasm constant.other.asm.nasm" },
-            "2": { "name": "storage.type.asm.nasm support.type.asm.nasm" }
+            "2": { "name": "storage.type.data.asm.nasm keyword.directive.storage.asm.nasm storage.type.asm.nasm support.type.asm.nasm" }
           }
         }
       ]
@@ -224,11 +328,26 @@
       "patterns": [
         {
           "name": "meta.section.asm.nasm",
-          "match": "(?i)\\b(section|segment)\\s+([.][A-Za-z0-9_.-]+)",
-          "captures": {
-            "1": { "name": "keyword.control.directive.asm.nasm" },
+          "begin": "(?i)\\b(section|segment)\\s+([.][A-Za-z0-9_.-]+)",
+          "beginCaptures": {
+            "1": { "name": "keyword.directive.section.asm.nasm keyword.control.directive.asm.nasm" },
             "2": { "name": "entity.name.section.asm.nasm" }
-          }
+          },
+          "end": "$",
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#sectionAttributes" },
+            { "include": "#numbers" },
+            { "include": "#operators" }
+          ]
+        }
+      ]
+    },
+    "sectionAttributes": {
+      "patterns": [
+        {
+          "name": "storage.modifier.section.attribute.asm.nasm storage.modifier.section.attribute.nasm",
+          "match": "(?i)\\b(?:align\\s*=\\s*\\d+|noalloc|noexec|nowrite|progbits|alloc|exec|write|nobits)\\b"
         }
       ]
     },
@@ -251,7 +370,7 @@
     "dataDeclarations": {
       "patterns": [
         {
-          "name": "storage.type.asm.nasm support.type.asm.nasm",
+          "name": "storage.type.data.asm.nasm keyword.directive.storage.asm.nasm storage.type.asm.nasm support.type.asm.nasm",
           "match": "(?i)\\b(?:db|dw|dd|dq|dt|do|dy|dz|resb|resw|resd|resq|rest|reso|resy|resz|equ|times|struc|endstruc|istruc|iend|at|align|alignb)\\b"
         }
       ]
@@ -259,8 +378,12 @@
     "sizeSpecifiers": {
       "patterns": [
         {
-          "name": "support.type.asm.nasm storage.modifier.asm.nasm",
-          "match": "(?i)\\b(?:byte|word|dword|qword|tword|oword|yword|zword|ptr|short|near|far|rel|abs|strict|nosplit|wrt)\\b"
+          "name": "storage.type.size.asm.nasm support.type.asm.nasm",
+          "match": "(?i)\\b(?:byte|word|dword|qword|tword|oword|yword|zword)\\b"
+        },
+        {
+          "name": "storage.modifier.addressing.asm.nasm storage.modifier.asm.nasm",
+          "match": "(?i)\\b(?:ptr|short|near|far|rel|abs|strict|nosplit|wrt)\\b"
         }
       ]
     },
@@ -271,23 +394,23 @@
           "match": "'(?:\\\\(?:[nrt0\\\\\"'`]|x[0-9A-Fa-f]{1,2})|[^'\\\\])'"
         },
         {
-          "name": "constant.numeric.asm.nasm",
+          "name": "constant.numeric.float.asm.nasm constant.numeric.asm.nasm",
           "match": "(?<![A-Za-z0-9_$?@])-?(?:\\d+\\.\\d*|\\.\\d+)(?:[eE][+-]?\\d+)?\\b|-?\\d+[eE][+-]?\\d+\\b"
         },
         {
-          "name": "constant.numeric.asm.nasm",
-          "match": "(?i)(?<![A-Za-z0-9_$?@])-?(?:0x[0-9A-F]+|[0-9][0-9A-F]*h)\\b"
+          "name": "constant.numeric.hex.asm.nasm constant.numeric.integer.asm.nasm constant.numeric.asm.nasm",
+          "match": "(?i)(?<![A-Za-z0-9_$?@])-?(?:0x[0-9A-F]+|\\$[0-9A-F]+|[0-9][0-9A-F]*h)\\b"
         },
         {
-          "name": "constant.numeric.asm.nasm",
+          "name": "constant.numeric.binary.asm.nasm constant.numeric.integer.asm.nasm constant.numeric.asm.nasm",
           "match": "(?i)(?<![A-Za-z0-9_$?@])-?(?:0b[01]+|[01]+b)\\b"
         },
         {
-          "name": "constant.numeric.asm.nasm",
+          "name": "constant.numeric.octal.asm.nasm constant.numeric.integer.asm.nasm constant.numeric.asm.nasm",
           "match": "(?i)(?<![A-Za-z0-9_$?@])-?(?:0o[0-7]+|[0-7]+o|[0-7]+q|0[0-7]+)\\b"
         },
         {
-          "name": "constant.numeric.asm.nasm",
+          "name": "constant.numeric.integer.asm.nasm constant.numeric.asm.nasm",
           "match": "(?<![A-Za-z0-9_$?@])-?\\d+\\b"
         }
       ]
@@ -295,31 +418,39 @@
     "registers": {
       "patterns": [
         {
-          "name": "variable.language.asm.nasm variable.language.register.asm.nasm support.variable.register.asm.nasm",
+          "name": "variable.language.register.general.asm.nasm variable.language.asm.nasm variable.language.register.asm.nasm support.variable.register.asm.nasm",
           "match": "(?i)\\b(?:r(?:ax|bx|cx|dx|si|di|bp|sp|ip)|e(?:ax|bx|cx|dx|si|di|bp|sp|ip)|(?:[abcd][hl])|(?:[abcd]x)|(?:[sb]p|[sd]i|ip)|(?:spl|bpl|sil|dil)|r(?:[8-9]|1[0-5])(?:d|w|b)?)\\b"
         },
         {
-          "name": "variable.language.asm.nasm variable.language.register.asm.nasm support.variable.register.asm.nasm",
-          "match": "(?i)\\b(?:cs|ds|es|fs|gs|ss|cr[02348]|dr[0-3]|dr6|dr7|mm[0-7]|(?:xmm|ymm|zmm)(?:[0-9]|[12][0-9]|3[01])|st[0-7]|k[0-7]|bnd[0-3])\\b"
+          "name": "variable.language.register.segment.asm.nasm variable.language.asm.nasm variable.language.register.asm.nasm support.variable.register.asm.nasm",
+          "match": "(?i)\\b(?:cs|ds|es|fs|gs|ss)\\b"
+        },
+        {
+          "name": "variable.language.register.fpu.asm.nasm variable.language.asm.nasm variable.language.register.asm.nasm support.variable.register.asm.nasm",
+          "match": "(?i)\\b(?:st[0-7])\\b"
+        },
+        {
+          "name": "variable.language.register.simd.asm.nasm variable.language.asm.nasm variable.language.register.asm.nasm support.variable.register.asm.nasm",
+          "match": "(?i)\\b(?:cr[02348]|dr[0-3]|dr6|dr7|mm[0-7]|(?:xmm|ymm|zmm)(?:[0-9]|[12][0-9]|3[01])|k[0-7]|bnd[0-3])\\b"
         }
       ]
     },
     "instructions": {
       "patterns": [
         {
-          "name": "keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
+          "name": "keyword.mnemonic.instruction.asm.nasm keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
           "match": "(?i)\\b(?:adc|add|and|bsf|bsr|bt|btc|btr|bts|call|cbw|cdq|cdqe|clc|cld|cli|cmc|cmov[a-z]+|cmp|cmps[bwdq]?|cmpxchg(?:8b|16b)?|cpuid|cqo|cwd|cwde|dec|div|enter|hlt|idiv|imul|in|inc|int|iretq?|ja|jae|jb|jbe|jc|jcxz|je|jecxz|jg|jge|jl|jle|jmp|jna|jnae|jnb|jnbe|jnc|jne|jng|jnge|jnl|jnle|jno|jnp|jns|jnz|jo|jp|jpe|jpo|jrcxz|js|jz|lahf|lea|leave|lock|lods[bwdq]?|loop(?:e|ne|nz|z)?|mov|movs[bwdq]?|movsx|movsxd|movzx|mul|neg|nop|not|or|out|pop|popf?q?|push|pushf?q?|rcl|rcr|retf?|retn|rol|ror|sahf|sal|sar|sbb|scas[bwdq]?|set[a-z]+|shl|shld|shr|shrd|stc|std|sti|stos[bwdq]?|sub|syscall|sysenter|sysexit|sysret|test|ud2|wait|xadd|xchg|xlatb?|xor)\\b"
         },
         {
-          "name": "keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
+          "name": "keyword.mnemonic.instruction.asm.nasm keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
           "match": "(?i)\\b(?:f2xm1|fabs|faddp?|fbld|fbstp|fchs|fclex|fcmov[a-z]+|fcomip?|fcompp?|fcos|fdivrp?|fdivp?|ffree|fiadd|ficomp?|fidivr?|fidiv|fild|fimul|finit|fisttp|fistp?|fisubr?|fisub|fld|fld1|fldcw|fldenv|fldl2e|fldl2t|fldlg2|fldln2|fldpi|fldz|fmulp?|fnclex|fninit|fnop|fnsave|fnstcw|fnstenv|fnstsw|fpatan|fprem1?|fptan|frndint|frstor|fsave|fscale|fsin|fsincos|fsqrt|fstp?|fstcw|fstenv|fstsw|fsubrp?|fsubp?|ftst|fucomip?|fucompp?|fxam|fxch|fxrstor|fxsave|fxtract|fyl2xp1|fyl2x|emms|movd|movq|padd[bwdq]|pandn?|por|psub[bwdq]|pxor)\\b"
         },
         {
-          "name": "keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
+          "name": "keyword.mnemonic.instruction.asm.nasm keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
           "match": "(?i)\\b(?:addp[ds]|adds[ds]|addps|andnp[ds]|andp[ds]|cmpp[ds]|cmps[ds]|comis[ds]|divp[ds]|divs[ds]|maxp[ds]|maxs[ds]|minp[ds]|mins[ds]|movap[ds]|movdq[au]|movhlps|movhpd|movhps|movlhps|movlp[ds]|movmskp[ds]|movntdq|movntp[ds]|movntq|movshdup|movsldup|movss|movupd|movups|mulp[ds]|muls[ds]|orp[ds]|sqrtp[ds]|sqrts[ds]|subp[ds]|subs[ds]|ucomis[ds]|unpckhp[ds]|unpcklp[ds]|xorp[ds])\\b"
         },
         {
-          "name": "keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
+          "name": "keyword.mnemonic.instruction.asm.nasm keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
           "match": "(?i)\\b(?:v[a-z][a-z0-9]*|kadd[bdqw]|kandn?[bdqw]|kmov[bdqw]|knot[bdqw]|kor[bdqw]|kortest[bdqw]|kshiftl[bdqw]|kshiftr[bdqw]|ktest[bdqw]|kunpck[bwdq]+|kx?nor[bdqw]|kxor[bdqw]|aesdec|aesdeclast|aesenc|aesenclast|aesimc|aeskeygenassist|sha1msg1|sha1msg2|sha1nexte|sha1rnds4|sha256msg1|sha256msg2|sha256rnds2|adcx|adox|andn|bextr|blsi|blsmsk|blsr|bzhi|lzcnt|mulx|pdep|pext|popcnt|rorx|sarx|shlx|shrx|tzcnt|rdrand|rdseed|rdtsc|rdtscp|rdmsr|wrmsr|lfence|mfence|sfence|pause|clflush|clflushopt|clwb|invlpg|lgdt|lidt|sgdt|sidt|ltr|str|swapgs|bndcl|bndcu|bndcn|bndmk|bndmov)\\b"
         }
       ]
@@ -342,6 +473,18 @@
     },
     "symbols": {
       "patterns": [
+        {
+          "name": "variable.other.label.numeric.reference.asm.nasm variable.other.label.numeric.reference.nasm",
+          "match": "(?i)(?<![A-Za-z0-9_$?@])\\d[bf]\\b"
+        },
+        {
+          "name": "variable.other.label.local.macro.reference.asm.nasm variable.other.label.local.macro.nasm",
+          "match": "(%%)[A-Za-z_.$?@][A-Za-z0-9_.$?@]*"
+        },
+        {
+          "name": "variable.other.label.local.reference.asm.nasm",
+          "match": "(?i)(?<![A-Za-z0-9_$?@])\\.[A-Za-z_.$?@][A-Za-z0-9_.$?@]*\\b"
+        },
         {
           "name": "variable.other.asm.nasm variable.other.symbol.asm.nasm entity.name.variable.asm.nasm",
           "match": "[A-Za-z_.$?@][A-Za-z0-9_.$?@]*"

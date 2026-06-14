@@ -3,7 +3,7 @@ const Module = require("module");
 const path = require("path");
 
 const root = path.resolve(__dirname, "..");
-const fixturePath = path.resolve(root, "..", "test.asm");
+const fixturePath = path.resolve(root, "examples", "demo.asm");
 const fixtureText = fs.readFileSync(fixturePath, "utf8");
 const registeredHoverProviders = [];
 
@@ -154,7 +154,7 @@ const cases = [
   { token: "prologue", lineIncludes: "prologue 32" },
   { token: ".data", lineIncludes: "section .data" },
   { token: "db", lineIncludes: "message:" },
-  { token: "qword", lineIncludes: "mov qword [counter]" }
+  { token: "qword", lineIncludes: "mov qword [buffer]" }
 ];
 
 for (const testCase of cases) {

@@ -10,11 +10,36 @@ const requiredFiles = [
   "assets/icon.png",
   "language-configuration.json",
   "data/nasm-docs.json",
+  "data/nasm-instructions.json",
+  "data/nasm-registers.json",
+  "data/nasm-directives.json",
+  "data/linux-syscalls-x86_64.json",
+  "data/calling-conventions.json",
+  "docs/token-scopes.md",
+  "docs/local-hover-docs.md",
+  "docs/include-resolution.md",
   "src/extension.js",
+  "src/language/diagnostics.js",
+  "src/language/grammar-support.js",
+  "src/language/hoverProvider.js",
+  "src/language/includeResolver.js",
+  "src/language/localDocs.js",
+  "src/language/macroExpansion.js",
+  "src/language/nasmAnalyzer.js",
+  "src/language/semanticTokens.js",
+  "src/language/symbolTable.js",
+  "src/language/tokenTypes.js",
+  "src/test/analyzer.test.js",
+  "src/test/hoverProvider.test.js",
+  "src/test/semanticTokens.test.js",
+  "src/test/fixtures/common.inc",
+  "src/test/fixtures/semantic.asm",
   "syntaxes/nasm-x64.tmLanguage.json",
   "snippets/nasm-x64.code-snippets",
   "examples/demo.asm",
   "examples/macros.inc",
+  "examples/PrintStr.inc",
+  "examples/cross-file-macro-test.asm",
   "scripts/validate.js",
   ".vscodeignore",
   ".gitignore"
@@ -44,11 +69,17 @@ const grammar = readJson("syntaxes/nasm-x64.tmLanguage.json");
 const snippets = readJson("snippets/nasm-x64.code-snippets");
 const languageConfig = readJson("language-configuration.json");
 const nasmDocs = readJson("data/nasm-docs.json");
+const localInstructionDocs = readJson("data/nasm-instructions.json");
+const localRegisterDocs = readJson("data/nasm-registers.json");
+const localDirectiveDocs = readJson("data/nasm-directives.json");
+const syscallDocs = readJson("data/linux-syscalls-x86_64.json");
+const callingConventionDocs = readJson("data/calling-conventions.json");
 
 assert(pkg.name === "mj-asm-highlighter", "package.json name must be mj-asm-highlighter");
 assert(pkg.displayName === "MJ Asm Highlighter", "package.json displayName must be MJ Asm Highlighter");
-assert(pkg.version === "0.1.1", "package.json version must be 0.1.1");
+assert(pkg.version === "0.1.3", "package.json version must be 0.1.3");
 assert(pkg.publisher === "agentXorion", "package.json publisher must be agentXorion");
+assert(pkg.repository && pkg.repository.url.includes("agentXorion/mj-asm-highlighter"), "package.json must include repository URL");
 assert(pkg.icon === "assets/icon.png", "package.json icon must be assets/icon.png");
 assert(pkg.main === "./src/extension.js", "package.json must point main to ./src/extension.js");
 assert(pkg.description.includes("semantic tokens"), "description should mention semantic tokens");
@@ -79,15 +110,41 @@ assert(
     ),
   "Custom NASM semantic token types must be contributed"
 );
+assert(
+  pkg.contributes.semanticTokenModifiers &&
+    ["global", "local", "numericLabel", "macroLocal", "section", "data", "code", "external", "exported"].every((id) =>
+      pkg.contributes.semanticTokenModifiers.some((modifier) => modifier.id === id)
+    ),
+  "Custom NASM semantic token modifiers must be contributed"
+);
+assert(
+  pkg.contributes.configuration &&
+    pkg.contributes.configuration.properties &&
+    pkg.contributes.configuration.properties["mjAsmHighlighter.includePaths"],
+  "Package must contribute mjAsmHighlighter.includePaths"
+);
+assert(
+  pkg.contributes.configuration.properties["mjAsmHighlighter.includePaths"].markdownDescription.includes("${fileDirname}"),
+  "Include path setting should document ${fileDirname}"
+);
 assert(semanticRules["instruction:nasmx64"] === "#C586C0", "Instructions must have a NASM semantic color");
 assert(semanticRules["register:nasmx64"] === "#569CD6", "Registers must share the macro constant NASM semantic color");
+assert(semanticRules["macro:nasmx64"] === "#569CD6", "Standard macro tokens must have a NASM semantic color");
+assert(semanticRules["macro.readonly:nasmx64"] === "#569CD6", "Readonly macro tokens must have a NASM semantic color");
+assert(semanticRules["namespace.section:nasmx64"] === "#4FC1FF", "Section namespaces must have a NASM semantic color");
 assert(semanticRules["section:nasmx64"] === "#4FC1FF", "Section names must have a NASM semantic color");
 assert(semanticRules["macroConstant:nasmx64"] === "#569CD6", "Macro constants must have a NASM semantic color");
 assert(semanticRules["macroConstant.declaration:nasmx64"] === "#569CD6", "EQU declarations must have a NASM semantic color");
 assert(semanticRules["keyword:nasmx64"] === "#C586C0", "Directive keywords must have a NASM semantic color");
+assert(semanticRules["modifier:nasmx64"] === "#D7BA7D", "Modifiers must have a NASM semantic color");
+assert(semanticRules["function.definition:nasmx64"] === "#DCDCAA", "Function definitions must have a NASM semantic color");
 assert(semanticRules["variable:nasmx64"] === "#9CDCFE", "Variables must have a NASM semantic color");
 assert(semanticRules["variable.declaration:nasmx64"] === "#9CDCFE", "Variable declarations must have a NASM semantic color");
+assert(semanticRules["variable.definition:nasmx64"] === "#9CDCFE", "Variable definitions must have a NASM semantic color");
+assert(semanticRules["variable.numericLabel:nasmx64"] === "#D7BA7D", "Numeric labels must have a NASM semantic color");
 assert(semanticRules["type:nasmx64"] === "#4EC9B0", "Data/type tokens must have a NASM semantic color");
+assert(semanticRules["struct:nasmx64"] === "#4EC9B0", "Struct tokens must have a NASM semantic color");
+assert(semanticRules["property:nasmx64"] === "#9CDCFE", "Struct fields must have a NASM semantic color");
 assert(semanticRules["string:nasmx64"] === "#CE9178", "Strings must have a NASM semantic color");
 
 const language = pkg.contributes.languages[0];
@@ -113,10 +170,12 @@ const requiredRepositories = [
   "macroDefinitions",
   "macroDefinedNames",
   "macroParameters",
+  "globalDeclarations",
   "registers",
   "instructions",
   "directives",
   "sectionDeclarations",
+  "sectionAttributes",
   "sectionNames",
   "dataDeclarations",
   "sizeSpecifiers",
@@ -130,14 +189,49 @@ for (const key of requiredRepositories) {
 
 const grammarText = fs.readFileSync(path.join(root, "syntaxes/nasm-x64.tmLanguage.json"), "utf8");
 const extensionText = fs.readFileSync(path.join(root, "src/extension.js"), "utf8");
+const analyzerText = fs.readFileSync(path.join(root, "src/language/nasmAnalyzer.js"), "utf8");
+const semanticText = fs.readFileSync(path.join(root, "src/language/semanticTokens.js"), "utf8");
+const symbolTableText = fs.readFileSync(path.join(root, "src/language/symbolTable.js"), "utf8");
+const includeResolverText = fs.readFileSync(path.join(root, "src/language/includeResolver.js"), "utf8");
+const hoverProviderText = fs.readFileSync(path.join(root, "src/language/hoverProvider.js"), "utf8");
+const localDocsText = fs.readFileSync(path.join(root, "src/language/localDocs.js"), "utf8");
+const macroExpansionText = fs.readFileSync(path.join(root, "src/language/macroExpansion.js"), "utf8");
+const tokenTypesText = fs.readFileSync(path.join(root, "src/language/tokenTypes.js"), "utf8");
+const grammarSupportText = fs.readFileSync(path.join(root, "src/language/grammar-support.js"), "utf8");
+const languageText = [
+  extensionText,
+  analyzerText,
+  semanticText,
+  symbolTableText,
+  includeResolverText,
+  hoverProviderText,
+  localDocsText,
+  macroExpansionText,
+  tokenTypesText,
+  grammarSupportText
+].join("\n");
 
 for (const scope of [
+  "keyword.mnemonic.instruction.asm.nasm",
   "keyword.mnemonic.asm.nasm",
   "keyword.other.instruction.asm.nasm",
   "variable.language.asm.nasm",
   "variable.language.register.asm.nasm",
+  "variable.language.register.general.asm.nasm",
+  "variable.language.register.simd.asm.nasm",
+  "variable.language.register.fpu.asm.nasm",
+  "variable.language.register.segment.asm.nasm",
   "support.variable.register.asm.nasm",
   "constant.numeric.asm.nasm",
+  "constant.numeric.integer.asm.nasm",
+  "constant.numeric.hex.asm.nasm",
+  "constant.numeric.binary.asm.nasm",
+  "constant.numeric.octal.asm.nasm",
+  "constant.numeric.float.asm.nasm",
+  "keyword.control.directive.preprocessor.asm.nasm",
+  "keyword.control.conditional.preprocessor.asm.nasm",
+  "keyword.control.include.preprocessor.asm.nasm",
+  "keyword.directive.section.asm.nasm",
   "keyword.control.directive.asm.nasm",
   "comment.line.semicolon.asm.nasm",
   "punctuation.definition.comment.asm.nasm",
@@ -153,9 +247,32 @@ for (const scope of [
   "constant.other.asm.nasm",
   "variable.other.declaration.asm.nasm",
   "variable.parameter.macro.asm.nasm",
+  "variable.parameter.macro.nasm",
+  "storage.modifier.global.asm.nasm",
+  "storage.modifier.extern.asm.nasm",
+  "entity.name.symbol.asm.nasm",
+  "entity.name.label.numeric.nasm",
+  "entity.name.label.numeric.asm.nasm",
+  "variable.other.label.numeric.reference.nasm",
+  "variable.other.label.numeric.reference.asm.nasm",
+  "entity.name.label.local.macro.nasm",
+  "entity.name.label.local.macro.asm.nasm",
+  "variable.other.label.local.macro.nasm",
+  "variable.other.label.local.reference.asm.nasm",
+  "variable.other.label.local.macro.reference.asm.nasm",
+  "entity.name.label.local.asm.nasm",
+  "storage.modifier.symbol-attribute.nasm",
+  "storage.modifier.symbol-attribute.function.asm.nasm",
+  "storage.modifier.symbol-attribute.data.asm.nasm",
+  "storage.modifier.section.attribute.nasm",
+  "storage.modifier.section.attribute.asm.nasm",
   "entity.name.label.asm.nasm",
   "variable.other.asm.nasm",
   "entity.name.variable.asm.nasm",
+  "storage.type.data.asm.nasm",
+  "keyword.directive.storage.asm.nasm",
+  "storage.type.size.asm.nasm",
+  "storage.modifier.addressing.asm.nasm",
   "storage.type.asm.nasm",
   "support.type.asm.nasm",
   "storage.modifier.asm.nasm",
@@ -169,24 +286,55 @@ for (const source of [
   "registerHoverProvider",
   "provideHover",
   "NASM_DOCUMENT_SELECTOR",
-  "{ language: \"nasmx64\" }",
+  "NASM_LANGUAGE_ID",
   "{ language: \"asm\" }",
   "{ pattern: \"**/*.asm\" }",
   "MarkdownString",
-  "require(\"../data/nasm-docs.json\")",
-  "getDocumentationHoverInfo",
-  "References:",
-  "Opcode: varies by operand form.",
-  "Opcode: not applicable. This is an assembler directive, not a CPU instruction.",
+  "createHoverProvider",
+  "getLocalDoc",
+  "getSyscallDocByMacro",
+  "expandMacroPreview",
+  "Preview with arguments",
+  "onDidChangeSemanticTokens",
+  "refreshSemanticTokens",
   "SemanticTokensLegend",
   "tokenModifiers",
+  "tokenTypes",
+  "NasmAnalyzer",
+  "createSemanticTokensProvider",
+  "collectSemanticTokens",
+  "SymbolTable",
+  "IncludeResolver",
+  "COMMON_INCLUDE_FOLDERS",
+  "includePaths",
+  "analyzeDocument",
+  "analyzeFile",
+  "clearCache",
+  "maxIncludeDepth",
+  "parseSection",
+  "parseSymbolDirective",
+  "parseStructStart",
+  "parseStructField",
+  "numericLabels",
+  "macroLocalLabels",
+  "structFields",
   "declaration",
   "definition",
   "readonly",
+  "global",
+  "local",
+  "numericLabel",
+  "macroLocal",
+  "external",
+  "exported",
   "instruction",
   "register",
   "section",
-  "macroConstant",
+  "macro",
+  "namespace",
+  "modifier",
+  "struct",
+  "property",
   "function",
   "variable",
   "keyword",
@@ -197,7 +345,7 @@ for (const source of [
   "parameter",
   "nasmx64"
 ]) {
-  assert(extensionText.includes(source), `Semantic token provider should include: ${source}`);
+  assert(languageText.includes(source), `Semantic architecture should include: ${source}`);
 }
 
 for (const instruction of [
@@ -220,7 +368,7 @@ for (const instruction of [
   "xadd",
   "sha256rnds2"
 ]) {
-  assert(extensionText.includes(`"${instruction}"`), `Semantic instruction set should include: ${instruction}`);
+  assert(languageText.includes(`"${instruction}"`) || localInstructionDocs[instruction], `Semantic instruction set should include: ${instruction}`);
 }
 
 for (const symbol of [
@@ -232,33 +380,39 @@ for (const symbol of [
   "const CODE_SECTIONS = new Set",
   "const DATA_SECTIONS = new Set",
   "INSTRUCTIONS.has(word)",
-  "knownSymbols.macroConstants.has(word)",
-  "knownSymbols.knownMacros.has(word)",
-  "knownSymbols.dataSymbols.has(word)",
-  "\"section\", [\"declaration\"]",
+  "table.lookup(\"macros\", word)",
+  "table.lookup(\"macroFunctions\", word)",
+  "table.lookup(\"dataSymbols\", word)",
+  "table.lookup(\"textSymbols\", word)",
+  "table.lookup(\"externs\", word)",
+  "table.lookup(\"globals\", word)",
+  "table.lookup(\"structs\", word)",
+  "table.lookup(\"structFields\", fullName)",
+  "\"namespace\", [\"section\"",
   "\"register\"",
   "\"instruction\"",
-  "\"macroConstant\", [\"declaration\"]",
-  "currentSectionKind === \"data\" ? [\"declaration\"]",
-  "\"macroConstant\", [\"definition\", \"readonly\"]"
+  "\"macro\", [\"declaration\", \"readonly\"]",
+  "\"variable\", [\"definition\", \"numericLabel\"]",
+  "\"variable\", [\"definition\", \"macroLocal\"]",
+  "directiveName === \"global\" ? \"exported\"",
+  "symbol.attribute === \"data\" ? \"variable\" : \"function\""
 ]) {
-  assert(extensionText.includes(symbol), `Semantic provider should enforce: ${symbol}`);
+  assert(languageText.includes(symbol), `Semantic provider should enforce: ${symbol}`);
 }
 
 for (const source of [
-  "const defineMacros = new Map()",
-  "const assignMacros = new Map()",
-  "const multiLineMacros = new Map()",
-  "parseDefineMacro",
-  "parseAssignMacro",
+  "this.defineMacros = new Map()",
+  "this.assignMacros = new Map()",
+  "this.multiLineMacros = new Map()",
+  "parseMacroConstant",
   "parseMultiLineMacro",
-  "getMacroHoverInfo",
-  "getMultiLineMacroPreview",
+  "getMacroFunctionHoverInfo",
+  "expandMacroPreview",
   "parseMacroCallArguments",
-  "Expansion preview",
+  "Preview with arguments",
   "COMPLEX_MACRO_DIRECTIVES"
 ]) {
-  assert(extensionText.includes(source), `Macro hover support should include: ${source}`);
+  assert(languageText.includes(source), `Macro hover support should include: ${source}`);
 }
 
 const requiredDocKeys = [
@@ -312,6 +466,36 @@ assert(
   "Size specifiers must use the required size-specifier opcode note"
 );
 
+for (const key of [
+  "mov", "lea", "push", "pop", "call", "ret", "syscall", "xor", "add", "sub", "imul", "div",
+  "cmp", "je", "jne", "ja", "jb", "jg", "jl", "jmp", "inc", "dec", "and", "or", "not",
+  "shl", "shr", "sar", "rol", "ror", "cmove", "cmovne", "sete", "setne", "cld", "rep",
+  "movsb", "lock", "nop", "pxor", "movdqa", "paddd", "movups", "vmovups", "vaddps",
+  "finit", "fld", "fld1", "faddp", "fstp"
+]) {
+  assert(localInstructionDocs[key], `data/nasm-instructions.json must include ${key}`);
+  assert(localInstructionDocs[key].summary, `${key} local instruction doc must include summary`);
+  assert(Array.isArray(localInstructionDocs[key].examples), `${key} local instruction doc must include examples`);
+}
+
+for (const key of ["rax", "rdi", "rsi", "rdx", "r8", "r9", "r10", "fs", "gs", "cs", "ds", "es", "ss"]) {
+  assert(localRegisterDocs[key], `data/nasm-registers.json must include ${key}`);
+}
+assert(localRegisterDocs.familyTemplates.xmm, "Register docs must include xmm family template");
+assert(localRegisterDocs.familyTemplates.ymm, "Register docs must include ymm family template");
+assert(localRegisterDocs.familyTemplates.zmm, "Register docs must include zmm family template");
+assert(localRegisterDocs.familyTemplates.st, "Register docs must include x87 stack template");
+
+for (const key of ["bits", "default", "cpu", "global", "extern", "section", "db", "dw", "dd", "dq", "resb", "resw", "resd", "resq", "equ", "times", "align", "struc", "endstruc", "istruc", "at", "iend", "%include", "%define", "%assign", "%macro", "%imacro", "%endmacro", "%ifdef", "%else", "%endif", "%rep", "%endrep", "%warning"]) {
+  assert(localDirectiveDocs[key], `data/nasm-directives.json must include ${key}`);
+}
+
+for (const [name, number] of Object.entries({ read: 0, write: 1, open: 2, close: 3, mmap: 9, munmap: 11, exit: 60, exit_group: 231 })) {
+  assert(syscallDocs.syscalls[name] && syscallDocs.syscalls[name].number === number, `Syscall docs must include ${name}`);
+}
+assert(callingConventionDocs.systemVAMD64.integerArguments.join(",") === "rdi,rsi,rdx,rcx,r8,r9", "Calling convention docs must include System V argument registers");
+assert(callingConventionDocs.linuxSyscallX86_64.arguments.join(",") === "rdi,rsi,rdx,r10,r8,r9", "Calling convention docs must include Linux syscall argument registers");
+
 const demoText = fs.readFileSync(path.join(root, "examples/demo.asm"), "utf8");
 for (const source of [
   "%define SYS_EXIT",
@@ -325,7 +509,14 @@ for (const source of [
   assert(demoText.includes(source), `Demo should include macro hover example: ${source}`);
 }
 
+const printStrText = fs.readFileSync(path.join(root, "examples/PrintStr.inc"), "utf8");
+const crossFileText = fs.readFileSync(path.join(root, "examples/cross-file-macro-test.asm"), "utf8");
+assert(printStrText.includes("%macro print_str_macro 2"), "PrintStr.inc must define print_str_macro");
+assert(crossFileText.includes("%include \"PrintStr.inc\""), "Cross-file example must include PrintStr.inc");
+assert(crossFileText.includes("print_str_macro rdi, rsi"), "Cross-file example must call included macro");
+
 const readmeText = fs.readFileSync(path.join(root, "README.md"), "utf8");
+const tokenScopesText = fs.readFileSync(path.join(root, "docs/token-scopes.md"), "utf8");
 for (const source of [
   "## Hover documentation",
   "Hover over `mov`",
@@ -341,14 +532,36 @@ for (const source of [
   "Hover over `LOCAL_COUNT`",
   "Hover over `prologue`",
   "Hover over `repeat_store`",
-  "`SYS_EXIT` shows expands to `60`"
+  "`SYS_EXIT` shows expands to `60`",
+  "docs/token-scopes.md",
+  "docs/local-hover-docs.md",
+  "docs/include-resolution.md",
+  "mjAsmHighlighter.includePaths",
+  "semantic token type `macro`"
 ]) {
   assert(readmeText.includes(source), `README should document hover testing: ${source}`);
 }
 
+for (const source of [
+  "macro.declaration.readonly",
+  "variable.numericLabel",
+  "variable.macroLocal",
+  "namespace.section",
+  "function.global.exported",
+  "function.global.external",
+  "struct.declaration",
+  "property",
+  "constant.numeric.hex.asm.nasm",
+  "entity.name.label.local.macro.asm.nasm"
+]) {
+  assert(tokenScopesText.includes(source), `docs/token-scopes.md should document: ${source}`);
+}
+
+assert(pkg.scripts && pkg.scripts.test && pkg.scripts.test.includes("semanticTokens.test.js"), "package.json should run semantic token tests");
+
 assert(
-  extensionText.includes("provideDocumentSemanticTokens"),
-  "src/extension.js must implement provideDocumentSemanticTokens"
+  languageText.includes("provideDocumentSemanticTokens"),
+  "Semantic token module must implement provideDocumentSemanticTokens"
 );
 assert(
   extensionText.includes("registerDocumentSemanticTokensProvider(NASM_DOCUMENT_SELECTOR"),
@@ -366,6 +579,7 @@ const expectedOrder = [
   "#preprocessor",
   "#macroDefinitions",
   "#macroParameters",
+  "#globalDeclarations",
   "#dataSections",
   "#equDefinitions",
   "#labels",
@@ -387,7 +601,7 @@ assert(
   "Grammar top-level patterns must preserve the requested priority order"
 );
 
-const labelPattern = grammar.repository.labels.patterns[0];
+const labelPattern = grammar.repository.labels.patterns[3];
 assert(
   labelPattern.captures["1"].name.startsWith("entity.name.function.asm.nasm"),
   "Code label fallback must use entity.name.function.asm.nasm first"
@@ -397,7 +611,7 @@ assert(
   "Label colons must use punctuation.separator.label.asm.nasm"
 );
 
-const dataLabelPattern = grammar.repository.dataLabels.patterns[0];
+const dataLabelPattern = grammar.repository.dataLabels.patterns[3];
 assert(
   dataLabelPattern.captures["1"].name.startsWith("entity.name.variable.asm.nasm"),
   "Data label fallback must use entity.name.variable.asm.nasm first"
@@ -415,7 +629,7 @@ assert(
 
 const sectionPattern = grammar.repository.sectionDeclarations.patterns[0];
 assert(
-  sectionPattern.captures["2"].name === "entity.name.section.asm.nasm",
+  sectionPattern.beginCaptures["2"].name === "entity.name.section.asm.nasm",
   "Section names must use entity.name.section.asm.nasm without function scopes"
 );
 
@@ -439,7 +653,7 @@ assert(
   "Macro names must use function-compatible scopes"
 );
 
-const symbolPattern = grammar.repository.symbols.patterns[0];
+const symbolPattern = grammar.repository.symbols.patterns[3];
 assert(
   symbolPattern.name.startsWith("variable.other.asm.nasm"),
   "Generic symbols must use variable.other.asm.nasm first"

@@ -2,10 +2,14 @@
   "name": "mj-asm-highlighter",
   "displayName": "MJ Asm Highlighter",
   "description": "Advanced NASM x86_64 syntax highlighting for VS Code using semantic tokens and standard TextMate scopes.",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "publisher": "agentXorion",
   "icon": "assets/icon.png",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentXorion/mj-asm-highlighter.git"
+  },
   "main": "./src/extension.js",
   "activationEvents": [
     "onLanguage:nasmx64",
@@ -79,6 +83,57 @@
         "superType": "variable"
       }
     ],
+    "semanticTokenModifiers": [
+      {
+        "id": "global",
+        "description": "NASM global or link-visible symbol"
+      },
+      {
+        "id": "local",
+        "description": "NASM local label or local symbol reference"
+      },
+      {
+        "id": "numericLabel",
+        "description": "NASM numeric local label or forward/backward numeric label reference"
+      },
+      {
+        "id": "macroLocal",
+        "description": "NASM macro-local label or reference"
+      },
+      {
+        "id": "section",
+        "description": "NASM section namespace"
+      },
+      {
+        "id": "data",
+        "description": "NASM data-section symbol"
+      },
+      {
+        "id": "code",
+        "description": "NASM code-section symbol"
+      },
+      {
+        "id": "external",
+        "description": "NASM externally defined symbol"
+      },
+      {
+        "id": "exported",
+        "description": "NASM exported global symbol"
+      }
+    ],
+    "configuration": {
+      "title": "MJ Asm Highlighter",
+      "properties": {
+        "mjAsmHighlighter.includePaths": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Additional NASM include search paths for semantic highlighting. Supports `${workspaceFolder}` and `${fileDirname}`."
+        }
+      }
+    },
     "configurationDefaults": {
       "editor.semanticHighlighting.enabled": true,
       "editor.semanticTokenColorCustomizations": {
@@ -86,14 +141,26 @@
           "instruction:nasmx64": "#C586C0",
           "keyword:nasmx64": "#C586C0",
           "register:nasmx64": "#569CD6",
+          "macro:nasmx64": "#569CD6",
+          "macro.readonly:nasmx64": "#569CD6",
+          "macro.declaration:nasmx64": "#569CD6",
           "macroConstant:nasmx64": "#569CD6",
           "macroConstant.declaration:nasmx64": "#569CD6",
+          "namespace.section:nasmx64": "#4FC1FF",
           "section:nasmx64": "#4FC1FF",
+          "modifier:nasmx64": "#D7BA7D",
           "operator:nasmx64": "#D7BA7D",
           "function:nasmx64": "#DCDCAA",
+          "function.definition:nasmx64": "#DCDCAA",
+          "function.local:nasmx64": "#DCDCAA",
           "variable:nasmx64": "#9CDCFE",
           "variable.declaration:nasmx64": "#9CDCFE",
+          "variable.definition:nasmx64": "#9CDCFE",
+          "variable.numericLabel:nasmx64": "#D7BA7D",
+          "variable.macroLocal:nasmx64": "#D7BA7D",
           "type:nasmx64": "#4EC9B0",
+          "struct:nasmx64": "#4EC9B0",
+          "property:nasmx64": "#9CDCFE",
           "parameter:nasmx64": "#9CDCFE",
           "number:nasmx64": "#B5CEA8",
           "string:nasmx64": "#CE9178"
@@ -174,6 +241,7 @@
   "scripts": {
     "compile": "node scripts/validate.js",
     "validate": "node scripts/validate.js",
+    "test": "node src/test/analyzer.test.js && node src/test/semanticTokens.test.js && node src/test/hoverProvider.test.js && node scripts/runtime-hover-smoke.js",
     "package": "vsce package --no-dependencies"
   },
   "devDependencies": {

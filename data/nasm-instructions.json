@@ -1,0 +1,402 @@
+{
+  "mov": {
+    "name": "mov",
+    "category": "data movement",
+    "summary": "Copies data from source to destination.",
+    "syntax": ["mov destination, source"],
+    "examples": ["mov rax, 1", "mov rsi, msg", "mov qword [buffer], 123"],
+    "notes": ["Does not change the source operand.", "Source and destination usually cannot both be memory operands."]
+  },
+  "lea": {
+    "name": "lea",
+    "category": "address calculation",
+    "summary": "Loads an effective address into a register without reading memory.",
+    "syntax": ["lea register, [address-expression]"],
+    "examples": ["lea rsi, [rel message]", "lea rdi, [buffer + rax * 2]"],
+    "notes": ["Useful for address arithmetic and RIP-relative symbol addresses."]
+  },
+  "push": {
+    "name": "push",
+    "category": "stack",
+    "summary": "Stores an operand on the stack and adjusts the stack pointer.",
+    "syntax": ["push source"],
+    "examples": ["push rbp", "push qword [value]"],
+    "notes": ["In 64-bit mode, stack pushes are normally 8 bytes."]
+  },
+  "pop": {
+    "name": "pop",
+    "category": "stack",
+    "summary": "Loads a value from the stack and adjusts the stack pointer.",
+    "syntax": ["pop destination"],
+    "examples": ["pop rbp", "pop rbx"],
+    "notes": ["The destination can be a register or memory operand."]
+  },
+  "call": {
+    "name": "call",
+    "category": "control flow",
+    "summary": "Calls a procedure and saves the return address on the stack.",
+    "syntax": ["call target"],
+    "examples": ["call printf", "call helper_function"],
+    "notes": ["Use `ret` in the callee to return."]
+  },
+  "ret": {
+    "name": "ret",
+    "category": "control flow",
+    "summary": "Returns from a procedure by popping the saved return address.",
+    "syntax": ["ret", "ret immediate"],
+    "examples": ["ret"],
+    "notes": ["The optional immediate adjusts the stack after returning."]
+  },
+  "syscall": {
+    "name": "syscall",
+    "category": "system call",
+    "summary": "Enters the operating-system system-call handler in 64-bit mode.",
+    "syntax": ["syscall"],
+    "examples": ["mov rax, 1", "mov rdi, 1", "mov rsi, msg", "mov rdx, len", "syscall"],
+    "notes": ["On Linux x86-64, `rax` is the syscall number and `rdi`, `rsi`, `rdx`, `r10`, `r8`, `r9` hold arguments 1 through 6.", "The return value is placed in `rax`; negative values usually indicate errors."]
+  },
+  "xor": {
+    "name": "xor",
+    "category": "bitwise",
+    "summary": "Computes bitwise exclusive OR.",
+    "syntax": ["xor destination, source"],
+    "examples": ["xor rax, rax", "xor rdx, rdx"],
+    "notes": ["`xor reg, reg` is a common way to zero a register."]
+  },
+  "add": {
+    "name": "add",
+    "category": "arithmetic",
+    "summary": "Adds the source operand to the destination.",
+    "syntax": ["add destination, source"],
+    "examples": ["add rax, 8", "add rsp, 16"],
+    "notes": ["Updates arithmetic flags."]
+  },
+  "sub": {
+    "name": "sub",
+    "category": "arithmetic",
+    "summary": "Subtracts the source operand from the destination.",
+    "syntax": ["sub destination, source"],
+    "examples": ["sub rsp, 32", "sub rax, rbx"],
+    "notes": ["Updates arithmetic flags."]
+  },
+  "imul": {
+    "name": "imul",
+    "category": "arithmetic",
+    "summary": "Performs signed integer multiplication.",
+    "syntax": ["imul source", "imul destination, source", "imul destination, source, immediate"],
+    "examples": ["imul rax, rbx", "imul rax, rbx, 10"],
+    "notes": ["Use `mul` for unsigned multiplication."]
+  },
+  "div": {
+    "name": "div",
+    "category": "arithmetic",
+    "summary": "Performs unsigned integer division.",
+    "syntax": ["div source"],
+    "examples": ["xor rdx, rdx", "div rcx"],
+    "notes": ["Dividend uses `rdx:rax` for 64-bit division.", "Use `idiv` for signed division."]
+  },
+  "cmp": {
+    "name": "cmp",
+    "category": "comparison",
+    "summary": "Compares operands by subtracting without storing the result.",
+    "syntax": ["cmp left, right"],
+    "examples": ["cmp rax, 0", "cmp byte [rdi], 0"],
+    "notes": ["Sets flags for conditional jumps and setcc instructions."]
+  },
+  "je": {
+    "name": "je",
+    "category": "conditional jump",
+    "summary": "Jumps if the zero flag is set.",
+    "syntax": ["je target"],
+    "examples": ["je .done"],
+    "notes": ["Alias of `jz`."]
+  },
+  "jne": {
+    "name": "jne",
+    "category": "conditional jump",
+    "summary": "Jumps if the zero flag is clear.",
+    "syntax": ["jne target"],
+    "examples": ["jne .loop"],
+    "notes": ["Alias of `jnz`."]
+  },
+  "ja": {
+    "name": "ja",
+    "category": "conditional jump",
+    "summary": "Jumps after an unsigned comparison when above.",
+    "syntax": ["ja target"],
+    "examples": ["ja .above"],
+    "notes": ["Use after `cmp` for unsigned greater-than checks."]
+  },
+  "jb": {
+    "name": "jb",
+    "category": "conditional jump",
+    "summary": "Jumps before an unsigned comparison when below.",
+    "syntax": ["jb target"],
+    "examples": ["jb .below"],
+    "notes": ["Use after `cmp` for unsigned less-than checks."]
+  },
+  "jg": {
+    "name": "jg",
+    "category": "conditional jump",
+    "summary": "Jumps after a signed comparison when greater.",
+    "syntax": ["jg target"],
+    "examples": ["jg .greater"],
+    "notes": ["Use for signed greater-than checks."]
+  },
+  "jl": {
+    "name": "jl",
+    "category": "conditional jump",
+    "summary": "Jumps after a signed comparison when less.",
+    "syntax": ["jl target"],
+    "examples": ["jl .less"],
+    "notes": ["Use for signed less-than checks."]
+  },
+  "jmp": {
+    "name": "jmp",
+    "category": "control flow",
+    "summary": "Transfers control unconditionally.",
+    "syntax": ["jmp target"],
+    "examples": ["jmp .done", "jmp 1f"],
+    "notes": ["Targets may be labels, registers, or memory operands depending on form."]
+  },
+  "inc": {
+    "name": "inc",
+    "category": "arithmetic",
+    "summary": "Adds one to the operand.",
+    "syntax": ["inc destination"],
+    "examples": ["inc rdi", "inc qword [counter]"],
+    "notes": ["Does not update the carry flag."]
+  },
+  "dec": {
+    "name": "dec",
+    "category": "arithmetic",
+    "summary": "Subtracts one from the operand.",
+    "syntax": ["dec destination"],
+    "examples": ["dec rcx"],
+    "notes": ["Does not update the carry flag."]
+  },
+  "and": {
+    "name": "and",
+    "category": "bitwise",
+    "summary": "Computes bitwise AND.",
+    "syntax": ["and destination, source"],
+    "examples": ["and rax, 0xff"],
+    "notes": ["Often used for masking bits."]
+  },
+  "or": {
+    "name": "or",
+    "category": "bitwise",
+    "summary": "Computes bitwise OR.",
+    "syntax": ["or destination, source"],
+    "examples": ["or rax, 1"],
+    "notes": ["Often used to set bits."]
+  },
+  "not": {
+    "name": "not",
+    "category": "bitwise",
+    "summary": "Flips all bits in the operand.",
+    "syntax": ["not destination"],
+    "examples": ["not rax"],
+    "notes": ["Does not update flags."]
+  },
+  "shl": {
+    "name": "shl",
+    "category": "shift",
+    "summary": "Shifts bits left, filling low bits with zero.",
+    "syntax": ["shl destination, count"],
+    "examples": ["shl rax, 1"],
+    "notes": ["Equivalent to `sal` for integer values."]
+  },
+  "shr": {
+    "name": "shr",
+    "category": "shift",
+    "summary": "Shifts bits right logically, filling high bits with zero.",
+    "syntax": ["shr destination, count"],
+    "examples": ["shr rax, 1"],
+    "notes": ["Use `sar` for signed arithmetic right shift."]
+  },
+  "sar": {
+    "name": "sar",
+    "category": "shift",
+    "summary": "Shifts bits right arithmetically, preserving the sign bit.",
+    "syntax": ["sar destination, count"],
+    "examples": ["sar rax, 1"],
+    "notes": ["Useful for signed integer division by powers of two."]
+  },
+  "rol": {
+    "name": "rol",
+    "category": "rotate",
+    "summary": "Rotates bits left.",
+    "syntax": ["rol destination, count"],
+    "examples": ["rol rax, 4"],
+    "notes": ["Bits shifted out of the high end re-enter at the low end."]
+  },
+  "ror": {
+    "name": "ror",
+    "category": "rotate",
+    "summary": "Rotates bits right.",
+    "syntax": ["ror destination, count"],
+    "examples": ["ror rax, 4"],
+    "notes": ["Bits shifted out of the low end re-enter at the high end."]
+  },
+  "cmove": {
+    "name": "cmove",
+    "category": "conditional move",
+    "summary": "Moves the source to the destination if equal/zero.",
+    "syntax": ["cmove destination, source"],
+    "examples": ["cmove rbx, rcx"],
+    "notes": ["Alias of `cmovz`."]
+  },
+  "cmovne": {
+    "name": "cmovne",
+    "category": "conditional move",
+    "summary": "Moves the source to the destination if not equal/not zero.",
+    "syntax": ["cmovne destination, source"],
+    "examples": ["cmovne rbx, rdx"],
+    "notes": ["Alias of `cmovnz`."]
+  },
+  "sete": {
+    "name": "sete",
+    "category": "setcc",
+    "summary": "Sets an 8-bit destination to 1 if equal/zero, otherwise 0.",
+    "syntax": ["sete r/m8"],
+    "examples": ["sete al"],
+    "notes": ["Alias of `setz`."]
+  },
+  "setne": {
+    "name": "setne",
+    "category": "setcc",
+    "summary": "Sets an 8-bit destination to 1 if not equal/not zero, otherwise 0.",
+    "syntax": ["setne r/m8"],
+    "examples": ["setne bl"],
+    "notes": ["Alias of `setnz`."]
+  },
+  "cld": {
+    "name": "cld",
+    "category": "flags",
+    "summary": "Clears the direction flag.",
+    "syntax": ["cld"],
+    "examples": ["cld", "rep movsb"],
+    "notes": ["String instructions then advance addresses upward."]
+  },
+  "rep": {
+    "name": "rep",
+    "category": "instruction prefix",
+    "summary": "Repeats a string instruction while the count register is nonzero.",
+    "syntax": ["rep string-instruction"],
+    "examples": ["rep movsb"],
+    "notes": ["Uses `rcx`, `ecx`, or `cx` depending on address size."]
+  },
+  "movsb": {
+    "name": "movsb",
+    "category": "string operation",
+    "summary": "Copies one byte from `[rsi]` to `[rdi]` and advances or decrements pointers.",
+    "syntax": ["movsb"],
+    "examples": ["cld", "rep movsb"],
+    "notes": ["Direction depends on the direction flag."]
+  },
+  "lock": {
+    "name": "lock",
+    "category": "instruction prefix",
+    "summary": "Requests atomic read-modify-write behavior for supported memory instructions.",
+    "syntax": ["lock instruction"],
+    "examples": ["lock inc qword [counter]"],
+    "notes": ["Only valid with selected instructions that write memory."]
+  },
+  "nop": {
+    "name": "nop",
+    "category": "control",
+    "summary": "Performs no operation.",
+    "syntax": ["nop"],
+    "examples": ["nop"],
+    "notes": ["Used for alignment, patch space, or timing padding."]
+  },
+  "pxor": {
+    "name": "pxor",
+    "category": "SIMD integer",
+    "summary": "Computes packed bitwise XOR.",
+    "syntax": ["pxor xmm1, xmm2/m128"],
+    "examples": ["pxor xmm0, xmm0"],
+    "notes": ["Commonly used to zero an XMM register."]
+  },
+  "movdqa": {
+    "name": "movdqa",
+    "category": "SIMD move",
+    "summary": "Moves aligned packed integer data.",
+    "syntax": ["movdqa xmm, xmm/m128"],
+    "examples": ["movdqa xmm1, [rel vector_a]"],
+    "notes": ["Memory operands must be suitably aligned for aligned forms."]
+  },
+  "paddd": {
+    "name": "paddd",
+    "category": "SIMD integer",
+    "summary": "Adds packed 32-bit integers.",
+    "syntax": ["paddd xmm1, xmm2/m128"],
+    "examples": ["paddd xmm1, xmm2"],
+    "notes": ["Operates lane-wise."]
+  },
+  "movups": {
+    "name": "movups",
+    "category": "SIMD move",
+    "summary": "Moves unaligned packed single-precision floating-point data.",
+    "syntax": ["movups xmm, xmm/m128"],
+    "examples": ["movups xmm0, [vector]"],
+    "notes": ["Use aligned forms only when alignment is guaranteed."]
+  },
+  "vmovups": {
+    "name": "vmovups",
+    "category": "AVX move",
+    "summary": "Moves unaligned packed single-precision floating-point data using VEX/EVEX encoding.",
+    "syntax": ["vmovups xmm/ymm/zmm, memory"],
+    "examples": ["vmovups ymm0, [rel vector_a]"],
+    "notes": ["Available width depends on CPU feature level."]
+  },
+  "vaddps": {
+    "name": "vaddps",
+    "category": "AVX floating-point",
+    "summary": "Adds packed single-precision floating-point values.",
+    "syntax": ["vaddps destination, left, right"],
+    "examples": ["vaddps ymm2, ymm0, ymm1"],
+    "notes": ["Operates lane-wise."]
+  },
+  "finit": {
+    "name": "finit",
+    "category": "x87",
+    "summary": "Initializes the x87 floating-point unit.",
+    "syntax": ["finit"],
+    "examples": ["finit"],
+    "notes": ["Also see `fninit` for the no-wait form."]
+  },
+  "fld": {
+    "name": "fld",
+    "category": "x87",
+    "summary": "Loads a floating-point value onto the x87 stack.",
+    "syntax": ["fld source"],
+    "examples": ["fld qword [value]"],
+    "notes": ["The loaded value becomes `st0`."]
+  },
+  "fld1": {
+    "name": "fld1",
+    "category": "x87",
+    "summary": "Pushes the constant 1.0 onto the x87 stack.",
+    "syntax": ["fld1"],
+    "examples": ["fld1"],
+    "notes": ["One of the x87 built-in constant load instructions."]
+  },
+  "faddp": {
+    "name": "faddp",
+    "category": "x87",
+    "summary": "Adds x87 stack values and pops the stack.",
+    "syntax": ["faddp st(i), st0"],
+    "examples": ["faddp st1, st0"],
+    "notes": ["Stores the result in the destination and pops `st0`."]
+  },
+  "fstp": {
+    "name": "fstp",
+    "category": "x87",
+    "summary": "Stores an x87 value to memory or register and pops the stack.",
+    "syntax": ["fstp destination"],
+    "examples": ["fstp qword [result]"],
+    "notes": ["Use `fst` if the value should remain on the x87 stack."]
+  }
+}

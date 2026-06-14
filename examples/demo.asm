@@ -129,6 +129,7 @@ _start:
     mov rax, [rel qword_value]
     mov eax, [rel origin_point + point.x]
     mov byte [buffer], 1
+    mov qword [buffer], 1
 
     ; Macro constants and function-like macros are highlighted as symbols.
     mov rbx, BUFFER_SIZE

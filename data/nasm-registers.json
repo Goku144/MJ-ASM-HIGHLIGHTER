@@ -1,0 +1,240 @@
+{
+  "rax": {
+    "name": "rax",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit general-purpose register.",
+    "sysvRole": "Integer or pointer return value.",
+    "linuxSyscallRole": "Before `syscall`: syscall number. After `syscall`: return value.",
+    "examples": ["mov rax, 1      ; SYS_write", "mov rax, 60     ; SYS_exit"]
+  },
+  "eax": {
+    "name": "eax",
+    "size": 32,
+    "family": "rax",
+    "summary": "Low 32 bits of `rax`; writes zero-extend into `rax` in 64-bit mode.",
+    "examples": ["mov eax, 1"]
+  },
+  "ax": {
+    "name": "ax",
+    "size": 16,
+    "family": "rax",
+    "summary": "Low 16 bits of `rax`.",
+    "examples": ["mov ax, 1"]
+  },
+  "al": {
+    "name": "al",
+    "size": 8,
+    "family": "rax",
+    "summary": "Low 8 bits of `rax`.",
+    "examples": ["sete al"]
+  },
+  "ah": {
+    "name": "ah",
+    "size": 8,
+    "family": "rax",
+    "summary": "High byte of the low 16 bits of `rax`.",
+    "examples": ["mov ah, 2"]
+  },
+  "rbx": {
+    "name": "rbx",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit general-purpose register.",
+    "sysvRole": "Callee-saved register.",
+    "examples": ["mov rbx, 1"]
+  },
+  "rcx": {
+    "name": "rcx",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit general-purpose register often used as a counter.",
+    "sysvRole": "Caller-saved register. Fourth integer/pointer argument in the Microsoft x64 ABI, not System V.",
+    "linuxSyscallRole": "Clobbered by `syscall`; Linux syscall argument 4 uses `r10`, not `rcx`.",
+    "examples": ["mov rcx, 5", "loop .again"]
+  },
+  "rdx": {
+    "name": "rdx",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit general-purpose register.",
+    "sysvRole": "Third integer or pointer function argument.",
+    "linuxSyscallRole": "Third syscall argument.",
+    "examples": ["mov rdx, msg_len"]
+  },
+  "rsi": {
+    "name": "rsi",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit general-purpose register often used as a source pointer.",
+    "sysvRole": "Second integer or pointer function argument.",
+    "linuxSyscallRole": "Second syscall argument.",
+    "examples": ["lea rsi, [rel msg]", "mov rsi, rdi"]
+  },
+  "rdi": {
+    "name": "rdi",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit general-purpose register often used as a destination pointer.",
+    "sysvRole": "First integer or pointer function argument.",
+    "linuxSyscallRole": "First syscall argument.",
+    "examples": ["mov rdi, 1      ; stdout for write syscall", "mov rdi, 0      ; exit code for exit syscall"]
+  },
+  "rbp": {
+    "name": "rbp",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit base/frame pointer register.",
+    "sysvRole": "Callee-saved register.",
+    "examples": ["push rbp", "mov rbp, rsp"]
+  },
+  "rsp": {
+    "name": "rsp",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit stack pointer register.",
+    "sysvRole": "Points at the active stack. Keep 16-byte alignment before calls.",
+    "examples": ["sub rsp, 32", "add rsp, 32"]
+  },
+  "rip": {
+    "name": "rip",
+    "size": 64,
+    "family": "instruction-pointer",
+    "summary": "Instruction pointer register; names the address of the next instruction.",
+    "examples": ["lea rax, [rel message]"]
+  },
+  "r8": {
+    "name": "r8",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit extended general-purpose register.",
+    "sysvRole": "Fifth integer or pointer function argument.",
+    "linuxSyscallRole": "Fifth syscall argument.",
+    "examples": ["mov r8, 5"]
+  },
+  "r9": {
+    "name": "r9",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit extended general-purpose register.",
+    "sysvRole": "Sixth integer or pointer function argument.",
+    "linuxSyscallRole": "Sixth syscall argument.",
+    "examples": ["mov r9, 6"]
+  },
+  "r10": {
+    "name": "r10",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit extended general-purpose register.",
+    "linuxSyscallRole": "Fourth syscall argument.",
+    "examples": ["mov r10, flags"]
+  },
+  "r11": {
+    "name": "r11",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit extended general-purpose register.",
+    "linuxSyscallRole": "Clobbered by `syscall`.",
+    "examples": ["mov r11, 0"]
+  },
+  "r12": {
+    "name": "r12",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit extended general-purpose register.",
+    "sysvRole": "Callee-saved register.",
+    "examples": ["mov r12, 0"]
+  },
+  "r13": {
+    "name": "r13",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit extended general-purpose register.",
+    "sysvRole": "Callee-saved register.",
+    "examples": ["mov r13, 0"]
+  },
+  "r14": {
+    "name": "r14",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit extended general-purpose register.",
+    "sysvRole": "Callee-saved register.",
+    "examples": ["mov r14, 0"]
+  },
+  "r15": {
+    "name": "r15",
+    "size": 64,
+    "family": "general-purpose",
+    "summary": "64-bit extended general-purpose register.",
+    "sysvRole": "Callee-saved register.",
+    "examples": ["mov r15, 0"]
+  },
+  "fs": {
+    "name": "fs",
+    "size": 16,
+    "family": "segment",
+    "summary": "Segment selector register; in 64-bit mode the FS base is commonly used for thread-local storage.",
+    "examples": ["mov rax, [fs:0x28]"]
+  },
+  "gs": {
+    "name": "gs",
+    "size": 16,
+    "family": "segment",
+    "summary": "Segment selector register; in 64-bit mode the GS base is often used by kernels or thread runtimes.",
+    "examples": ["mov rax, [gs:0]"]
+  },
+  "cs": {
+    "name": "cs",
+    "size": 16,
+    "family": "segment",
+    "summary": "Code segment selector register.",
+    "examples": ["push cs"]
+  },
+  "ds": {
+    "name": "ds",
+    "size": 16,
+    "family": "segment",
+    "summary": "Data segment selector register.",
+    "examples": ["push ds"]
+  },
+  "es": {
+    "name": "es",
+    "size": 16,
+    "family": "segment",
+    "summary": "Extra segment selector register.",
+    "examples": ["push es"]
+  },
+  "ss": {
+    "name": "ss",
+    "size": 16,
+    "family": "segment",
+    "summary": "Stack segment selector register.",
+    "examples": ["push ss"]
+  },
+  "familyTemplates": {
+    "xmm": {
+      "size": 128,
+      "family": "SIMD/vector",
+      "summary": "128-bit vector register used by SSE, AVX, and AVX-512 forms.",
+      "examples": ["pxor xmm0, xmm0", "movdqa xmm1, [rel vector]"]
+    },
+    "ymm": {
+      "size": 256,
+      "family": "SIMD/vector",
+      "summary": "256-bit vector register used by AVX and AVX2 forms.",
+      "examples": ["vmovups ymm0, [rel vector]", "vaddps ymm2, ymm0, ymm1"]
+    },
+    "zmm": {
+      "size": 512,
+      "family": "SIMD/vector",
+      "summary": "512-bit vector register used by AVX-512 forms.",
+      "examples": ["vmovups zmm0, [rel vector]"]
+    },
+    "st": {
+      "size": 80,
+      "family": "x87 floating-point stack",
+      "summary": "x87 floating-point stack register. `st0` is the current top of stack.",
+      "examples": ["faddp st1, st0"]
+    }
+  }
+}

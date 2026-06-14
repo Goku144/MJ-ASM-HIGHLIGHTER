@@ -1,0 +1,78 @@
+{
+  "registerConvention": {
+    "number": "rax",
+    "arguments": ["rdi", "rsi", "rdx", "r10", "r8", "r9"],
+    "returnValue": "rax",
+    "notes": ["`rcx` and `r11` are clobbered by `syscall`.", "Negative return values usually indicate errors."]
+  },
+  "syscalls": {
+    "read": {
+      "number": 0,
+      "arguments": [
+        { "name": "fd", "register": "rdi" },
+        { "name": "buf", "register": "rsi" },
+        { "name": "count", "register": "rdx" }
+      ],
+      "example": ["mov rax, 0", "mov rdi, 0", "mov rsi, buffer", "mov rdx, 64", "syscall"]
+    },
+    "write": {
+      "number": 1,
+      "arguments": [
+        { "name": "fd", "register": "rdi" },
+        { "name": "buf", "register": "rsi" },
+        { "name": "count", "register": "rdx" }
+      ],
+      "example": ["mov rax, 1", "mov rdi, 1", "mov rsi, message", "mov rdx, message_len", "syscall"]
+    },
+    "open": {
+      "number": 2,
+      "arguments": [
+        { "name": "filename", "register": "rdi" },
+        { "name": "flags", "register": "rsi" },
+        { "name": "mode", "register": "rdx" }
+      ],
+      "example": ["mov rax, 2", "mov rdi, path", "mov rsi, 0", "syscall"]
+    },
+    "close": {
+      "number": 3,
+      "arguments": [
+        { "name": "fd", "register": "rdi" }
+      ],
+      "example": ["mov rax, 3", "mov rdi, fd", "syscall"]
+    },
+    "mmap": {
+      "number": 9,
+      "arguments": [
+        { "name": "addr", "register": "rdi" },
+        { "name": "length", "register": "rsi" },
+        { "name": "prot", "register": "rdx" },
+        { "name": "flags", "register": "r10" },
+        { "name": "fd", "register": "r8" },
+        { "name": "offset", "register": "r9" }
+      ],
+      "example": ["mov rax, 9", "xor rdi, rdi", "mov rsi, 4096", "mov rdx, 3", "mov r10, 34", "mov r8, -1", "xor r9, r9", "syscall"]
+    },
+    "munmap": {
+      "number": 11,
+      "arguments": [
+        { "name": "addr", "register": "rdi" },
+        { "name": "length", "register": "rsi" }
+      ],
+      "example": ["mov rax, 11", "mov rdi, address", "mov rsi, 4096", "syscall"]
+    },
+    "exit": {
+      "number": 60,
+      "arguments": [
+        { "name": "status", "register": "rdi" }
+      ],
+      "example": ["mov rax, 60", "xor rdi, rdi", "syscall"]
+    },
+    "exit_group": {
+      "number": 231,
+      "arguments": [
+        { "name": "status", "register": "rdi" }
+      ],
+      "example": ["mov rax, 231", "xor rdi, rdi", "syscall"]
+    }
+  }
+}

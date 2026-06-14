@@ -1,0 +1,243 @@
+{
+  "bits": {
+    "name": "bits",
+    "category": "assembler directive",
+    "summary": "Selects the default instruction mode.",
+    "syntax": ["bits 16", "bits 32", "bits 64"],
+    "examples": ["bits 64"],
+    "notes": ["Use `bits 64` for normal x86-64 NASM source."]
+  },
+  "default": {
+    "name": "default",
+    "category": "assembler directive",
+    "summary": "Changes NASM defaults such as RIP-relative addressing behavior.",
+    "syntax": ["default rel", "default abs"],
+    "examples": ["default rel"],
+    "notes": ["`default rel` is common for position-independent x86-64 code."]
+  },
+  "cpu": {
+    "name": "cpu",
+    "category": "assembler directive",
+    "summary": "Restricts accepted instructions to a selected CPU or feature set.",
+    "syntax": ["cpu feature"],
+    "examples": ["cpu x64"]
+  },
+  "global": {
+    "name": "global",
+    "category": "symbol directive",
+    "summary": "Exports a symbol so the linker can resolve it from other object files.",
+    "syntax": ["global symbol", "global symbol:function", "global symbol:data"],
+    "examples": ["global _start", "global asm_hello:function"]
+  },
+  "extern": {
+    "name": "extern",
+    "category": "symbol directive",
+    "summary": "Declares a symbol defined by another object file or library.",
+    "syntax": ["extern symbol"],
+    "examples": ["extern printf"]
+  },
+  "section": {
+    "name": "section",
+    "category": "section directive",
+    "summary": "Switches assembly output to a named section.",
+    "syntax": ["section name [attributes]"],
+    "examples": ["section .text", "section .data align=16"]
+  },
+  "db": {
+    "name": "db",
+    "category": "data declaration",
+    "summary": "Emits initialized bytes.",
+    "syntax": ["db value [, value ...]"],
+    "examples": ["message: db \"Hello\", 10, 0"]
+  },
+  "dw": {
+    "name": "dw",
+    "category": "data declaration",
+    "summary": "Emits initialized 16-bit words.",
+    "syntax": ["dw value [, value ...]"],
+    "examples": ["word_value: dw 0x1234"]
+  },
+  "dd": {
+    "name": "dd",
+    "category": "data declaration",
+    "summary": "Emits initialized 32-bit doublewords or single-precision floating-point values.",
+    "syntax": ["dd value [, value ...]"],
+    "examples": ["dword_value: dd 0x12345678", "float_value: dd 3.14"]
+  },
+  "dq": {
+    "name": "dq",
+    "category": "data declaration",
+    "summary": "Emits initialized 64-bit quadwords or double-precision floating-point values.",
+    "syntax": ["dq value [, value ...]"],
+    "examples": ["qword_value: dq 0x1122334455667788"]
+  },
+  "resb": {
+    "name": "resb",
+    "category": "reservation declaration",
+    "summary": "Reserves uninitialized byte storage.",
+    "syntax": ["resb count"],
+    "examples": ["buffer: resb 64"]
+  },
+  "resw": {
+    "name": "resw",
+    "category": "reservation declaration",
+    "summary": "Reserves uninitialized 16-bit word storage.",
+    "syntax": ["resw count"],
+    "examples": ["words: resw 16"]
+  },
+  "resd": {
+    "name": "resd",
+    "category": "reservation declaration",
+    "summary": "Reserves uninitialized 32-bit doubleword storage.",
+    "syntax": ["resd count"],
+    "examples": ["items: resd 16"]
+  },
+  "resq": {
+    "name": "resq",
+    "category": "reservation declaration",
+    "summary": "Reserves uninitialized 64-bit quadword storage.",
+    "syntax": ["resq count"],
+    "examples": ["pointers: resq 4"]
+  },
+  "equ": {
+    "name": "equ",
+    "category": "data declaration",
+    "summary": "Defines a symbol as an assembly-time constant.",
+    "syntax": ["label equ expression"],
+    "examples": ["message_len equ $ - message"]
+  },
+  "times": {
+    "name": "times",
+    "category": "repeat directive",
+    "summary": "Repeats the following instruction or data declaration a computed number of times.",
+    "syntax": ["times count instruction-or-data"],
+    "examples": ["padding: times 16 db 0"]
+  },
+  "align": {
+    "name": "align",
+    "category": "alignment directive",
+    "summary": "Advances output to the requested alignment.",
+    "syntax": ["align boundary"],
+    "examples": ["align 16"]
+  },
+  "struc": {
+    "name": "struc",
+    "category": "structure directive",
+    "summary": "Starts a NASM structure layout definition.",
+    "syntax": ["struc name"],
+    "examples": ["struc Person"]
+  },
+  "endstruc": {
+    "name": "endstruc",
+    "category": "structure directive",
+    "summary": "Ends a NASM structure layout definition.",
+    "syntax": ["endstruc"],
+    "examples": ["endstruc"]
+  },
+  "istruc": {
+    "name": "istruc",
+    "category": "structure directive",
+    "summary": "Starts initialized data using a structure layout.",
+    "syntax": ["istruc name"],
+    "examples": ["istruc Person"]
+  },
+  "at": {
+    "name": "at",
+    "category": "structure directive",
+    "summary": "Selects a structure field while using `istruc`.",
+    "syntax": ["at field, value"],
+    "examples": ["at Person.age, dd 21"]
+  },
+  "iend": {
+    "name": "iend",
+    "category": "structure directive",
+    "summary": "Ends an initialized structure block.",
+    "syntax": ["iend"],
+    "examples": ["iend"]
+  },
+  "%include": {
+    "name": "%include",
+    "category": "preprocessor directive",
+    "summary": "Includes another source file before assembly continues.",
+    "syntax": ["%include \"file.inc\""],
+    "examples": ["%include \"PrintStr.inc\""],
+    "notes": ["This extension resolves simple quoted include paths for highlighting and hover."]
+  },
+  "%define": {
+    "name": "%define",
+    "category": "preprocessor directive",
+    "summary": "Defines a single-line preprocessor macro or constant.",
+    "syntax": ["%define name replacement", "%define name(arg) replacement"],
+    "examples": ["%define SYS_WRITE 1", "%define BIT(x) (1 << (x))"]
+  },
+  "%assign": {
+    "name": "%assign",
+    "category": "preprocessor directive",
+    "summary": "Defines or redefines a numeric preprocessor variable.",
+    "syntax": ["%assign name expression"],
+    "examples": ["%assign LOCAL_COUNT 4"]
+  },
+  "%macro": {
+    "name": "%macro",
+    "category": "macro directive",
+    "summary": "Starts a multi-line macro definition.",
+    "syntax": ["%macro name parameter-count"],
+    "examples": ["%macro print_str_macro 2"]
+  },
+  "%imacro": {
+    "name": "%imacro",
+    "category": "macro directive",
+    "summary": "Starts a case-insensitive multi-line macro definition.",
+    "syntax": ["%imacro name parameter-count"],
+    "examples": ["%imacro log 1"]
+  },
+  "%endmacro": {
+    "name": "%endmacro",
+    "category": "macro directive",
+    "summary": "Ends a multi-line macro definition.",
+    "syntax": ["%endmacro"],
+    "examples": ["%endmacro"]
+  },
+  "%ifdef": {
+    "name": "%ifdef",
+    "category": "conditional directive",
+    "summary": "Assembles following preprocessor lines when a macro is defined.",
+    "syntax": ["%ifdef name"],
+    "examples": ["%ifdef DEBUG"]
+  },
+  "%else": {
+    "name": "%else",
+    "category": "conditional directive",
+    "summary": "Starts the fallback branch of a preprocessor conditional.",
+    "syntax": ["%else"],
+    "examples": ["%else"]
+  },
+  "%endif": {
+    "name": "%endif",
+    "category": "conditional directive",
+    "summary": "Ends a preprocessor conditional block.",
+    "syntax": ["%endif"],
+    "examples": ["%endif"]
+  },
+  "%rep": {
+    "name": "%rep",
+    "category": "repeat directive",
+    "summary": "Repeats a preprocessor block a specified number of times.",
+    "syntax": ["%rep count"],
+    "examples": ["%rep 4", "    nop", "%endrep"]
+  },
+  "%endrep": {
+    "name": "%endrep",
+    "category": "repeat directive",
+    "summary": "Ends a `%rep` block.",
+    "syntax": ["%endrep"],
+    "examples": ["%endrep"]
+  },
+  "%warning": {
+    "name": "%warning",
+    "category": "preprocessor directive",
+    "summary": "Emits an assembly warning with the given message.",
+    "syntax": ["%warning message"],
+    "examples": ["%warning \"debug build enabled\""]
+  }
+}
