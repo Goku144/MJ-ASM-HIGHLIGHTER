@@ -3,7 +3,7 @@
   "displayName": "MJ Asm Highlighter",
   "description": "Advanced NASM x86_64 syntax highlighting for VS Code using semantic tokens and standard TextMate scopes.",
   "version": "0.1.0",
-  "publisher": "mj",
+  "publisher": "agentXorion",
   "icon": "assets/icon.png",
   "license": "MIT",
   "main": "./src/extension.js",
