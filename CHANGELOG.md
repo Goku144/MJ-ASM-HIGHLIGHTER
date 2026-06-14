@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- Fixed NASM semicolon comment scopes and punctuation capture for theme-friendly comment coloring.
+- Added comment-safe semantic token parsing so instructions and symbols inside comments are ignored.
+- Expanded the example ASM files with educational comments and broader NASM examples.
+
 ## 0.1.0
 
 - Added NASM x86_64 TextMate grammar using standard theme-friendly scopes.

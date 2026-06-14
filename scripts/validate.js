@@ -47,7 +47,7 @@ const nasmDocs = readJson("data/nasm-docs.json");
 
 assert(pkg.name === "mj-asm-highlighter", "package.json name must be mj-asm-highlighter");
 assert(pkg.displayName === "MJ Asm Highlighter", "package.json displayName must be MJ Asm Highlighter");
-assert(pkg.version === "0.1.0", "package.json version must be 0.1.0");
+assert(pkg.version === "0.1.1", "package.json version must be 0.1.1");
 assert(pkg.publisher === "agentXorion", "package.json publisher must be agentXorion");
 assert(pkg.icon === "assets/icon.png", "package.json icon must be assets/icon.png");
 assert(pkg.main === "./src/extension.js", "package.json must point main to ./src/extension.js");
@@ -139,6 +139,8 @@ for (const scope of [
   "support.variable.register.asm.nasm",
   "constant.numeric.asm.nasm",
   "keyword.control.directive.asm.nasm",
+  "comment.line.semicolon.asm.nasm",
+  "punctuation.definition.comment.asm.nasm",
   "punctuation.definition.directive.asm.nasm",
   "punctuation.definition.macro.asm.nasm",
   "punctuation.definition.preprocessor.asm.nasm",

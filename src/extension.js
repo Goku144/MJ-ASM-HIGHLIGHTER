@@ -1140,10 +1140,12 @@ function classifySection(sectionName) {
 
 function scanLine(text) {
   const stringRanges = [];
+  const commentStart = findCommentStart(text);
   let quote = null;
   let start = 0;
+  const codeEnd = commentStart >= 0 ? commentStart : text.length;
 
-  for (let i = 0; i < text.length; i += 1) {
+  for (let i = 0; i < codeEnd; i += 1) {
     const char = text[i];
 
     if (quote) {
@@ -1156,10 +1158,6 @@ function scanLine(text) {
       continue;
     }
 
-    if (char === ";") {
-      return { commentStart: i, stringRanges };
-    }
-
     if (char === "\"" || char === "'" || char === "`") {
       quote = char;
       start = i;
@@ -1167,10 +1165,47 @@ function scanLine(text) {
   }
 
   if (quote) {
-    stringRanges.push({ start, end: text.length });
+    stringRanges.push({ start, end: codeEnd });
   }
 
-  return { commentStart: text.length, stringRanges };
+  return { commentStart: codeEnd, stringRanges };
+}
+
+function findCommentStart(line) {
+  let quote = null;
+  let escaped = false;
+
+  for (let i = 0; i < line.length; i += 1) {
+    const ch = line[i];
+
+    if (escaped) {
+      escaped = false;
+      continue;
+    }
+
+    if (ch === "\\") {
+      escaped = true;
+      continue;
+    }
+
+    if (quote) {
+      if (ch === quote) {
+        quote = null;
+      }
+      continue;
+    }
+
+    if (ch === "\"" || ch === "'" || ch === "`") {
+      quote = ch;
+      continue;
+    }
+
+    if (ch === ";") {
+      return i;
+    }
+  }
+
+  return -1;
 }
 
 function scanRegex(text, regex, callback) {

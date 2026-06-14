@@ -91,7 +91,7 @@ The `package` script uses `@vscode/vsce` to create a `.vsix` file.
 1. Run `npm run package`.
 2. Open the VS Code Extensions panel.
 3. Select **Install from VSIX...**.
-4. Choose the generated `mj-asm-highlighter-0.1.0.vsix`.
+4. Choose the generated `mj-asm-highlighter-0.1.1.vsix`.
 
 ## Refresh After Installing
 
@@ -279,6 +279,23 @@ This extension uses TextMate scopes and your current VS Code theme. If your them
       ],
       "settings": {
         "foreground": "#D7BA7D"
+      }
+    }
+  ]
+}
+```
+
+## TextMate Comment Fallback
+
+Most VS Code themes color `comment.line` scopes automatically. If NASM semicolon comments are not green in your theme, add this to your VS Code `settings.json`:
+
+```json
+"editor.tokenColorCustomizations": {
+  "textMateRules": [
+    {
+      "scope": "comment.line.semicolon.asm.nasm",
+      "settings": {
+        "foreground": "#6A9955"
       }
     }
   ]
