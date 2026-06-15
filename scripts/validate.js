@@ -18,10 +18,13 @@ const requiredFiles = [
   "docs/token-scopes.md",
   "docs/local-hover-docs.md",
   "docs/include-resolution.md",
+  "docs/go-to-definition.md",
   "src/extension.js",
+  "src/language/definitionProvider.js",
   "src/language/diagnostics.js",
   "src/language/grammar-support.js",
   "src/language/hoverProvider.js",
+  "src/language/instructionMnemonics.js",
   "src/language/includeResolver.js",
   "src/language/localDocs.js",
   "src/language/macroExpansion.js",
@@ -30,6 +33,7 @@ const requiredFiles = [
   "src/language/symbolTable.js",
   "src/language/tokenTypes.js",
   "src/test/analyzer.test.js",
+  "src/test/definitionProvider.test.js",
   "src/test/hoverProvider.test.js",
   "src/test/semanticTokens.test.js",
   "src/test/fixtures/common.inc",
@@ -39,8 +43,14 @@ const requiredFiles = [
   "examples/demo.asm",
   "examples/macros.inc",
   "examples/PrintStr.inc",
+  "examples/GoToDefinition.inc",
   "examples/cross-file-macro-test.asm",
+  "examples/go-to-definition-test.asm",
+  "examples/color-operator-number-test.asm",
+  "examples/comment-ignore-test.asm",
+  "examples/instruction-hover-test.asm",
   "scripts/validate.js",
+  "scripts/check-instruction-docs.js",
   ".vscodeignore",
   ".gitignore"
 ];
@@ -77,7 +87,7 @@ const callingConventionDocs = readJson("data/calling-conventions.json");
 
 assert(pkg.name === "mj-asm-highlighter", "package.json name must be mj-asm-highlighter");
 assert(pkg.displayName === "MJ Asm Highlighter", "package.json displayName must be MJ Asm Highlighter");
-assert(pkg.version === "0.1.3", "package.json version must be 0.1.3");
+assert(pkg.version === "1.0.1", "package.json version must be 1.0.1");
 assert(pkg.publisher === "agentXorion", "package.json publisher must be agentXorion");
 assert(pkg.repository && pkg.repository.url.includes("agentXorion/mj-asm-highlighter"), "package.json must include repository URL");
 assert(pkg.icon === "assets/icon.png", "package.json icon must be assets/icon.png");
@@ -189,6 +199,7 @@ for (const key of requiredRepositories) {
 
 const grammarText = fs.readFileSync(path.join(root, "syntaxes/nasm-x64.tmLanguage.json"), "utf8");
 const extensionText = fs.readFileSync(path.join(root, "src/extension.js"), "utf8");
+const definitionProviderText = fs.readFileSync(path.join(root, "src/language/definitionProvider.js"), "utf8");
 const analyzerText = fs.readFileSync(path.join(root, "src/language/nasmAnalyzer.js"), "utf8");
 const semanticText = fs.readFileSync(path.join(root, "src/language/semanticTokens.js"), "utf8");
 const symbolTableText = fs.readFileSync(path.join(root, "src/language/symbolTable.js"), "utf8");
@@ -198,8 +209,10 @@ const localDocsText = fs.readFileSync(path.join(root, "src/language/localDocs.js
 const macroExpansionText = fs.readFileSync(path.join(root, "src/language/macroExpansion.js"), "utf8");
 const tokenTypesText = fs.readFileSync(path.join(root, "src/language/tokenTypes.js"), "utf8");
 const grammarSupportText = fs.readFileSync(path.join(root, "src/language/grammar-support.js"), "utf8");
+const instructionMnemonicsText = fs.readFileSync(path.join(root, "src/language/instructionMnemonics.js"), "utf8");
 const languageText = [
   extensionText,
+  definitionProviderText,
   analyzerText,
   semanticText,
   symbolTableText,
@@ -208,7 +221,8 @@ const languageText = [
   localDocsText,
   macroExpansionText,
   tokenTypesText,
-  grammarSupportText
+  grammarSupportText,
+  instructionMnemonicsText
 ].join("\n");
 
 for (const scope of [
@@ -276,7 +290,13 @@ for (const scope of [
   "storage.type.asm.nasm",
   "support.type.asm.nasm",
   "storage.modifier.asm.nasm",
-  "keyword.operator.asm.nasm"
+  "keyword.operator.asm.nasm",
+  "keyword.operator.arithmetic.asm.nasm",
+  "keyword.operator.assignment.asm.nasm",
+  "punctuation.separator.comma.asm.nasm",
+  "punctuation.separator.segment.asm.nasm",
+  "punctuation.section.brackets.begin.asm.nasm",
+  "punctuation.section.brackets.end.asm.nasm"
 ]) {
   assert(grammarText.includes(scope), `Grammar should include scope: ${scope}`);
 }
@@ -284,13 +304,20 @@ for (const scope of [
 for (const source of [
   "registerDocumentSemanticTokensProvider",
   "registerHoverProvider",
+  "registerDefinitionProvider",
+  "registerDeclarationProvider",
   "provideHover",
+  "provideDefinition",
+  "provideDeclaration",
   "NASM_DOCUMENT_SELECTOR",
   "NASM_LANGUAGE_ID",
   "{ language: \"asm\" }",
   "{ pattern: \"**/*.asm\" }",
   "MarkdownString",
   "createHoverProvider",
+  "createDefinitionProvider",
+  "createDeclarationProvider",
+  "getNasmSymbolAtPosition",
   "getLocalDoc",
   "getSyscallDocByMacro",
   "expandMacroPreview",
@@ -317,6 +344,8 @@ for (const source of [
   "parseStructField",
   "numericLabels",
   "macroLocalLabels",
+  "localLabelDefinitions",
+  "macroLocalLabelDefinitions",
   "structFields",
   "declaration",
   "definition",
@@ -468,14 +497,21 @@ assert(
 
 for (const key of [
   "mov", "lea", "push", "pop", "call", "ret", "syscall", "xor", "add", "sub", "imul", "div",
-  "cmp", "je", "jne", "ja", "jb", "jg", "jl", "jmp", "inc", "dec", "and", "or", "not",
+  "cmp", "test", "je", "jne", "ja", "jb", "jg", "jl", "jmp", "loop", "loope", "loopne",
+  "inc", "dec", "and", "or", "not", "neg", "adc", "sbb", "mul", "idiv", "cdq", "cqo",
+  "movzx", "movsx", "xchg", "int", "enter", "leave", "hlt", "cpuid", "rdtsc",
   "shl", "shr", "sar", "rol", "ror", "cmove", "cmovne", "sete", "setne", "cld", "rep",
   "movsb", "lock", "nop", "pxor", "movdqa", "paddd", "movups", "vmovups", "vaddps",
   "finit", "fld", "fld1", "faddp", "fstp"
 ]) {
-  assert(localInstructionDocs[key], `data/nasm-instructions.json must include ${key}`);
-  assert(localInstructionDocs[key].summary, `${key} local instruction doc must include summary`);
-  assert(Array.isArray(localInstructionDocs[key].examples), `${key} local instruction doc must include examples`);
+  const doc = localInstructionDocs[key];
+  assert(doc, `data/nasm-instructions.json must include ${key}`);
+  if (doc.aliasOf) {
+    assert(localInstructionDocs[doc.aliasOf], `${key} local instruction alias target must exist`);
+  } else {
+    assert(doc.summary, `${key} local instruction doc must include summary`);
+    assert(Array.isArray(doc.examples), `${key} local instruction doc must include examples`);
+  }
 }
 
 for (const key of ["rax", "rdi", "rsi", "rdx", "r8", "r9", "r10", "fs", "gs", "cs", "ds", "es", "ss"]) {
@@ -486,7 +522,7 @@ assert(localRegisterDocs.familyTemplates.ymm, "Register docs must include ymm fa
 assert(localRegisterDocs.familyTemplates.zmm, "Register docs must include zmm family template");
 assert(localRegisterDocs.familyTemplates.st, "Register docs must include x87 stack template");
 
-for (const key of ["bits", "default", "cpu", "global", "extern", "section", "db", "dw", "dd", "dq", "resb", "resw", "resd", "resq", "equ", "times", "align", "struc", "endstruc", "istruc", "at", "iend", "%include", "%define", "%assign", "%macro", "%imacro", "%endmacro", "%ifdef", "%else", "%endif", "%rep", "%endrep", "%warning"]) {
+for (const key of ["bits", "default", "cpu", "global", "extern", "section", "db", "dw", "dd", "dq", "resb", "resw", "resd", "resq", "equ", "times", "align", "noalloc", "noexec", "nowrite", "progbits", "struc", "endstruc", "istruc", "at", "iend", "%include", "%define", "%assign", "%macro", "%imacro", "%endmacro", "%ifdef", "%else", "%endif", "%rep", "%endrep", "%warning"]) {
   assert(localDirectiveDocs[key], `data/nasm-directives.json must include ${key}`);
 }
 
@@ -511,13 +547,42 @@ for (const source of [
 
 const printStrText = fs.readFileSync(path.join(root, "examples/PrintStr.inc"), "utf8");
 const crossFileText = fs.readFileSync(path.join(root, "examples/cross-file-macro-test.asm"), "utf8");
+const goToDefinitionIncludeText = fs.readFileSync(path.join(root, "examples/GoToDefinition.inc"), "utf8");
+const goToDefinitionText = fs.readFileSync(path.join(root, "examples/go-to-definition-test.asm"), "utf8");
+const operatorNumberText = fs.readFileSync(path.join(root, "examples/color-operator-number-test.asm"), "utf8");
+const commentIgnoreText = fs.readFileSync(path.join(root, "examples/comment-ignore-test.asm"), "utf8");
+const instructionHoverText = fs.readFileSync(path.join(root, "examples/instruction-hover-test.asm"), "utf8");
 assert(printStrText.includes("%macro print_str_macro 2"), "PrintStr.inc must define print_str_macro");
 assert(crossFileText.includes("%include \"PrintStr.inc\""), "Cross-file example must include PrintStr.inc");
 assert(crossFileText.includes("print_str_macro rdi, rsi"), "Cross-file example must call included macro");
+assert(goToDefinitionIncludeText.includes("%define SYS_WRITE 1"), "GoToDefinition.inc must define SYS_WRITE");
+assert(goToDefinitionIncludeText.includes("%macro print_str_macro 2"), "GoToDefinition.inc must define print_str_macro");
+assert(goToDefinitionIncludeText.includes("struc Person"), "GoToDefinition.inc must define Person");
+assert(goToDefinitionText.includes("%include \"GoToDefinition.inc\""), "Go-to-definition example must include GoToDefinition.inc");
+assert(goToDefinitionText.includes("call local_function"), "Go-to-definition example must call local_function");
+assert(goToDefinitionText.includes("jnz .loop"), "Go-to-definition example must reference .loop");
+assert(goToDefinitionText.includes("jnz 1b"), "Go-to-definition example must reference numeric label 1b");
+assert(goToDefinitionText.includes("at Person.age, dd 21"), "Go-to-definition example must reference Person.age");
+assert(operatorNumberText.includes("section .rodata align=16"), "Operator/number example must include align attribute");
+assert(operatorNumberText.includes("vector_a: dd 1.0, 2.0, 3.0, 4.0"), "Operator/number example must include float array");
+assert(operatorNumberText.includes("qword [fs:0x28]"), "Operator/number example must include segment override");
+assert(commentIgnoreText.includes("%include \"PrintStr.inc\""), "Comment-ignore example must include PrintStr.inc");
+assert(commentIgnoreText.includes("; print_str_macro rdi, rsi"), "Comment-ignore example must include commented macro call");
+assert(commentIgnoreText.includes("; SYS_WRITE"), "Comment-ignore example must include commented constant");
+assert(commentIgnoreText.includes("mov rax, SYS_WRITE ; SYS_WRITE"), "Comment-ignore example must include inline commented constant");
+assert(commentIgnoreText.includes("jmp 1f ; 1f"), "Comment-ignore example must include inline commented numeric forward reference");
+assert(commentIgnoreText.includes("jnz 1b ; 1b"), "Comment-ignore example must include inline commented numeric backward reference");
+for (const source of ["push rbp", "rep movsb", "lock inc qword [counter]", "vaddps ymm1", "fstp qword [float_value]", "leave"]) {
+  assert(instructionHoverText.includes(source), `Instruction hover example must include: ${source}`);
+}
 
 const readmeText = fs.readFileSync(path.join(root, "README.md"), "utf8");
 const tokenScopesText = fs.readFileSync(path.join(root, "docs/token-scopes.md"), "utf8");
+const goToDefinitionDocsText = fs.readFileSync(path.join(root, "docs/go-to-definition.md"), "utf8");
 for (const source of [
+  "## Go to Definition",
+  "Ctrl+Click / F12",
+  "included macros/constants",
   "## Hover documentation",
   "Hover over `mov`",
   "Hover over `rax`",
@@ -536,10 +601,26 @@ for (const source of [
   "docs/token-scopes.md",
   "docs/local-hover-docs.md",
   "docs/include-resolution.md",
+  "docs/go-to-definition.md",
   "mjAsmHighlighter.includePaths",
   "semantic token type `macro`"
 ]) {
   assert(readmeText.includes(source), `README should document hover testing: ${source}`);
+}
+
+for (const source of [
+  "Ctrl+Click",
+  "F12",
+  "Right click -> `Go to Definition`",
+  "Numeric labels",
+  "Macro-local labels",
+  "Person.age",
+  "Person_size",
+  "extern",
+  "not a full NASM assembler",
+  "simple quoted `%include`"
+]) {
+  assert(goToDefinitionDocsText.includes(source), `docs/go-to-definition.md should document: ${source}`);
 }
 
 for (const source of [
@@ -558,6 +639,9 @@ for (const source of [
 }
 
 assert(pkg.scripts && pkg.scripts.test && pkg.scripts.test.includes("semanticTokens.test.js"), "package.json should run semantic token tests");
+assert(pkg.scripts && pkg.scripts.test && pkg.scripts.test.includes("definitionProvider.test.js"), "package.json should run definition provider tests");
+assert(pkg.scripts && pkg.scripts["check:instruction-docs"] === "node scripts/check-instruction-docs.js", "package.json should define check:instruction-docs");
+assert(pkg.scripts.validate && pkg.scripts.validate.includes("npm run check:instruction-docs"), "package.json validate should run instruction doc coverage");
 
 assert(
   languageText.includes("provideDocumentSemanticTokens"),
@@ -570,6 +654,14 @@ assert(
 assert(
   extensionText.includes("registerHoverProvider(NASM_DOCUMENT_SELECTOR"),
   "Hover provider must register with the NASM document selector"
+);
+assert(
+  extensionText.includes("registerDefinitionProvider(NASM_DOCUMENT_SELECTOR"),
+  "Definition provider must register with the NASM document selector"
+);
+assert(
+  extensionText.includes("registerDeclarationProvider(NASM_DOCUMENT_SELECTOR"),
+  "Declaration provider must register with the NASM document selector"
 );
 
 const topLevelIncludes = grammar.patterns.map((pattern) => pattern.include);
@@ -638,6 +730,34 @@ assert(
   sectionNamePattern.name === "entity.name.section.asm.nasm",
   "Standalone section names must use entity.name.section.asm.nasm without function scopes"
 );
+
+const sectionAlignAttributePattern = grammar.repository.sectionAttributes.patterns[0];
+assert(
+  sectionAlignAttributePattern.captures["1"].name.includes("storage.modifier.section.attribute.asm.nasm"),
+  "Section align attribute name must use the section attribute scope"
+);
+assert(
+  sectionAlignAttributePattern.captures["3"].name.includes("keyword.operator.assignment.asm.nasm"),
+  "Section align assignment must use the assignment operator scope"
+);
+assert(
+  sectionAlignAttributePattern.captures["5"].name.includes("constant.numeric.integer.asm.nasm"),
+  "Section align value must use the integer numeric scope"
+);
+
+const bracketScopeText = JSON.stringify(grammar.repository.brackets);
+assert(bracketScopeText.includes("punctuation.section.brackets.begin.asm.nasm"), "Bracket begin scope must be present");
+assert(bracketScopeText.includes("punctuation.section.brackets.end.asm.nasm"), "Bracket end scope must be present");
+
+const operatorScopeText = JSON.stringify(grammar.repository.operators);
+for (const scope of [
+  "keyword.operator.arithmetic.asm.nasm",
+  "keyword.operator.assignment.asm.nasm",
+  "punctuation.separator.comma.asm.nasm",
+  "punctuation.separator.segment.asm.nasm"
+]) {
+  assert(operatorScopeText.includes(scope), `Operator grammar must include ${scope}`);
+}
 
 const macroPattern = grammar.repository.macroDefinitions.patterns[0];
 assert(

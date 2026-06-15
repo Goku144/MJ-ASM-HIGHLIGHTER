@@ -115,10 +115,44 @@
   },
   "align": {
     "name": "align",
+    "subtitle": "Alignment directive / section attribute",
     "category": "alignment directive",
-    "summary": "Advances output to the requested alignment.",
-    "syntax": ["align boundary"],
-    "examples": ["align 16"]
+    "summary": "In a section declaration:\n\n```asm\nsection .data align=16\n```\n\nit requests that the section is aligned on a 16-byte boundary.\n\nAs a standalone directive:\n\n```asm\nalign 16\n```\n\nit pads the current location until the next 16-byte boundary.",
+    "syntax": ["section .data align=16", "align 16"],
+    "examples": ["section .data align=16", "align 16"],
+    "notes": ["- Improves SIMD/data alignment.", "- May improve memory access performance.", "- Required by some instructions/data layouts."]
+  },
+  "noalloc": {
+    "name": "noalloc",
+    "category": "section attribute",
+    "summary": "Marks a section as not allocated into the program's memory image.",
+    "syntax": ["section .note.GNU-stack noalloc"],
+    "examples": ["section .note.GNU-stack noalloc noexec nowrite progbits"],
+    "notes": ["Common on `.note.GNU-stack`, which carries metadata rather than loadable data."]
+  },
+  "noexec": {
+    "name": "noexec",
+    "category": "section attribute",
+    "summary": "Marks a section as non-executable.",
+    "syntax": ["section .note.GNU-stack noexec"],
+    "examples": ["section .note.GNU-stack noalloc noexec nowrite progbits"],
+    "notes": ["Used with `.note.GNU-stack` to indicate that the object does not require an executable stack."]
+  },
+  "nowrite": {
+    "name": "nowrite",
+    "category": "section attribute",
+    "summary": "Marks a section as not writable.",
+    "syntax": ["section .note.GNU-stack nowrite"],
+    "examples": ["section .note.GNU-stack noalloc noexec nowrite progbits"],
+    "notes": ["Useful for metadata sections that should not request writable memory permissions."]
+  },
+  "progbits": {
+    "name": "progbits",
+    "category": "section attribute",
+    "summary": "Selects an ELF section type containing program-defined bytes.",
+    "syntax": ["section .note.GNU-stack progbits"],
+    "examples": ["section .note.GNU-stack noalloc noexec nowrite progbits"],
+    "notes": ["For `.note.GNU-stack`, the section is normally empty but still carries stack-permission metadata."]
   },
   "struc": {
     "name": "struc",

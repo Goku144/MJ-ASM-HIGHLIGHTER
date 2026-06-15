@@ -3,19 +3,34 @@
 const path = require("path");
 const { getLocalDoc, getSyscallDocByMacro } = require("./localDocs");
 const { expandMacroPreview, parseMacroCallArguments, normalizeBodyLines } = require("./macroExpansion");
+const { isInstruction } = require("./semanticTokens");
+const { getNasmSymbolAtPosition, resolveNumericLabel } = require("./definitionProvider");
+const { scanLine, splitCodeAndComment } = require("./nasmAnalyzer");
 
 const HOVER_TOKEN_PATTERN = /%%[A-Za-z_.$?@][A-Za-z0-9_.$?@]*|%[A-Za-z][A-Za-z0-9_]*|\.[A-Za-z0-9_.-]+|[A-Za-z_.$?@][A-Za-z0-9_.$?@]*:?\b|\d+[fb]?\b|\$\$|\$/g;
 
 function createHoverProvider(vscode, analyzer) {
   return {
     provideHover(document, position) {
-      const hoverToken = getHoverToken(document, position);
+      const symbol = getNasmSymbolAtPosition(document, position);
+      if (symbol && symbol.kind === "numericLabelReference") {
+        return makeNumericLabelReferenceHover(vscode, document, symbol, position);
+      }
+
+      if (symbol && symbol.kind === "numericLabelDefinition") {
+        return makeNumericLabelDefinitionHover(vscode, symbol);
+      }
+
+      const hoverToken = symbol || getHoverToken(document, position);
       if (!hoverToken) {
         return null;
       }
 
       const table = analyzer.analyzeDocument(document);
-      const info = getSymbolHoverInfo(hoverToken.text, table, document, position) || getLocalDoc(hoverToken.text);
+      const info =
+        getSymbolHoverInfo(hoverToken.text, table, document, position) ||
+        getLocalDoc(hoverToken.text) ||
+        getInstructionFallbackHoverInfo(hoverToken.text);
       if (!info) {
         return null;
       }
@@ -25,15 +40,91 @@ function createHoverProvider(vscode, analyzer) {
   };
 }
 
+function makeNumericLabelReferenceHover(vscode, document, symbol, position) {
+  const target = resolveNumericLabel(document, symbol.name, symbol.direction, position.line);
+  const directionText = symbol.direction === "forward" ? "forward" : "backward";
+  const targetText = symbol.direction === "forward" ? "next" : "previous";
+  const markdown = new vscode.MarkdownString("");
+  markdown.supportHtml = false;
+  markdown.isTrusted = false;
+
+  markdown.appendMarkdown(`### NASM numeric label reference: \`${symbol.text}\`\n\n`);
+  markdown.appendMarkdown(`\`${symbol.text}\` jumps ${directionText} to the ${targetText} \`${symbol.name}:\` label.\n\n`);
+  markdown.appendMarkdown(`- \`${symbol.name}\` = numeric label name\n`);
+  markdown.appendMarkdown(`- \`${symbol.text.slice(-1)}\` = ${directionText}\n\n`);
+
+  if (target) {
+    markdown.appendMarkdown(`Resolved target: \`${symbol.name}:\` at line ${target.range.line + 1}.\n\n`);
+  } else {
+    markdown.appendMarkdown(`No matching ${directionText} \`${symbol.name}:\` label was found in this file.\n\n`);
+  }
+
+  markdown.appendCodeblock(
+    [
+      "jmp 1f",
+      "",
+      "1:",
+      "    dec rcx",
+      "    jnz 1b"
+    ].join("\n"),
+    "asm"
+  );
+
+  return new vscode.Hover(markdown, hoverRange(vscode, symbol.range));
+}
+
+function makeNumericLabelDefinitionHover(vscode, symbol) {
+  const markdown = new vscode.MarkdownString("");
+  markdown.supportHtml = false;
+  markdown.isTrusted = false;
+
+  markdown.appendMarkdown(`### NASM numeric label: \`${symbol.name}:\`\n\n`);
+  markdown.appendMarkdown("This is a reusable local numeric label.\n\n");
+  markdown.appendMarkdown("References:\n");
+  markdown.appendMarkdown(`- \`${symbol.name}f\` jumps forward to the next \`${symbol.name}:\`\n`);
+  markdown.appendMarkdown(`- \`${symbol.name}b\` jumps backward to the previous \`${symbol.name}:\`\n\n`);
+  markdown.appendMarkdown("Numeric labels are useful for short local jumps.\n");
+
+  return new vscode.Hover(markdown, hoverRange(vscode, symbol.range));
+}
+
+function getInstructionFallbackHoverInfo(token) {
+  const lower = String(token || "").toLowerCase();
+  if (!isInstruction(lower)) {
+    return null;
+  }
+
+  return {
+    title: lower,
+    description:
+      "Recognized NASM/x86-64 instruction.\n\n" +
+      "Detailed local documentation for this mnemonic is missing.\n" +
+      "Please add it to:\n\n" +
+      "```txt\n" +
+      "data/nasm-instructions.json\n" +
+      "```"
+  };
+}
+
 function getHoverToken(document, position) {
   if (!document || typeof document.lineAt !== "function") {
     return null;
   }
 
   const line = document.lineAt(position.line).text;
+  const { code, commentStart } = splitCodeAndComment(line);
+  if (commentStart !== -1 && position.character >= commentStart) {
+    return null;
+  }
+
+  const state = scanLine(line);
+  if (isInsideRanges(position.character, state.stringRanges)) {
+    return null;
+  }
+
   HOVER_TOKEN_PATTERN.lastIndex = 0;
   let match;
-  while ((match = HOVER_TOKEN_PATTERN.exec(line)) !== null) {
+  while ((match = HOVER_TOKEN_PATTERN.exec(code)) !== null) {
     const start = match.index;
     const end = start + match[0].length;
     if (position.character >= start && position.character <= end) {
@@ -43,6 +134,10 @@ function getHoverToken(document, position) {
   }
 
   return null;
+}
+
+function isInsideRanges(character, ranges) {
+  return ranges.some((range) => character >= range.start && character < range.end);
 }
 
 function getSymbolHoverInfo(token, table, document, position) {
@@ -171,12 +266,29 @@ function sourceLabel(symbol) {
   return line ? `${filename}:${line}` : filename;
 }
 
+function hoverRange(vscode, range) {
+  if (!range || !Number.isInteger(range.line) || !Number.isInteger(range.character)) {
+    return undefined;
+  }
+
+  const length = Number.isInteger(range.length) ? range.length : 1;
+  if (typeof vscode.Range === "function") {
+    return new vscode.Range(range.line, range.character, range.line, range.character + length);
+  }
+
+  return {
+    start: { line: range.line, character: range.character },
+    end: { line: range.line, character: range.character + length }
+  };
+}
+
 function formatHover(vscode, info) {
   const markdown = new vscode.MarkdownString("");
   markdown.supportHtml = false;
   markdown.isTrusted = false;
 
-  markdown.appendMarkdown(`### \`${escapeMarkdown(info.title || "")}\`\n\n`);
+  const subtitle = info.subtitle ? ` — ${escapeMarkdown(info.subtitle)}` : "";
+  markdown.appendMarkdown(`### \`${escapeMarkdown(info.title || "")}\`${subtitle}\n\n`);
   appendField(markdown, "Category", info.category);
   if (info.description) {
     markdown.appendMarkdown(`${info.description}\n\n`);
@@ -206,6 +318,7 @@ function formatHover(vscode, info) {
   appendCode(markdown, "Preview with arguments", info.expansionPreview);
   appendCode(markdown, "Syntax", asBlock(info.syntax));
   appendCode(markdown, "Examples", asBlock(info.examples));
+  appendFlags(markdown, info.flags);
 
   if (info.related) {
     markdown.appendMarkdown(`**${escapeMarkdown(info.related.title)}:** ${escapeMarkdown(info.related.description)}\n\n`);
@@ -216,7 +329,7 @@ function formatHover(vscode, info) {
   if (info.notes && info.notes.length) {
     markdown.appendMarkdown("**Notes:**\n");
     for (const note of info.notes) {
-      markdown.appendMarkdown(note.startsWith("- ") ? `${note}\n` : `- ${escapeMarkdown(note)}\n`);
+      markdown.appendMarkdown(note.startsWith("- ") ? `${note}\n` : `- ${note}\n`);
     }
     markdown.appendMarkdown("\n");
   }
@@ -237,6 +350,35 @@ function appendCode(markdown, label, value) {
   }
 }
 
+function appendFlags(markdown, flags) {
+  if (!flags) {
+    return;
+  }
+
+  const rows = [];
+  addFlagRow(rows, "Reads", flags.reads);
+  addFlagRow(rows, "Updates", flags.writes || flags.updates);
+  addFlagRow(rows, "Sets", flags.sets);
+  addFlagRow(rows, "Clears", flags.clears);
+  addFlagRow(rows, "Leaves undefined", flags.undefined);
+
+  if (!rows.length) {
+    return;
+  }
+
+  markdown.appendMarkdown("**Flags:**\n");
+  for (const row of rows) {
+    markdown.appendMarkdown(`- ${row}\n`);
+  }
+  markdown.appendMarkdown("\n");
+}
+
+function addFlagRow(rows, label, values) {
+  if (Array.isArray(values) && values.length) {
+    rows.push(`${label} ${values.map((flag) => `\`${escapeMarkdown(flag)}\``).join(", ")}.`);
+  }
+}
+
 function asBlock(value) {
   if (!value) {
     return "";
@@ -251,7 +393,11 @@ function escapeMarkdown(value) {
 module.exports = {
   createHoverProvider,
   getHoverToken,
+  makeNumericLabelReferenceHover,
+  makeNumericLabelDefinitionHover,
   getSymbolHoverInfo,
+  getInstructionFallbackHoverInfo,
   formatHover,
+  appendFlags,
   sourceLabel
 };

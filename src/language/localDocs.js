@@ -97,11 +97,12 @@ function getLocalDoc(token) {
 }
 
 function getInstructionDoc(token) {
-  const doc = instructions[token];
-  if (!doc) {
+  const resolved = resolveInstructionDoc(token);
+  if (!resolved) {
     return null;
   }
 
+  const { doc, aliasOf } = resolved;
   if (token === "syscall") {
     const convention = linuxSyscalls.registerConvention;
     return {
@@ -121,13 +122,32 @@ function getInstructionDoc(token) {
   }
 
   return {
-    title: doc.name,
+    title: token,
+    subtitle: doc.subtitle,
     category: `Instruction - ${doc.category}`,
     description: doc.summary,
     syntax: doc.syntax,
     examples: doc.examples,
-    notes: doc.notes
+    notes: aliasOf ? [`Alias of \`${aliasOf}\`.`, ...(doc.notes || [])] : doc.notes,
+    flags: doc.flags
   };
+}
+
+function resolveInstructionDoc(token, seen = new Set()) {
+  const lower = normalize(token);
+  const doc = instructions[lower];
+  if (!doc || seen.has(lower)) {
+    return null;
+  }
+
+  if (!doc.aliasOf) {
+    return { doc };
+  }
+
+  const aliasOf = normalize(doc.aliasOf);
+  seen.add(lower);
+  const resolved = resolveInstructionDoc(aliasOf, seen);
+  return resolved ? { doc: resolved.doc, aliasOf } : null;
 }
 
 function getRegisterDoc(token) {
@@ -191,6 +211,7 @@ function getDirectiveDoc(token) {
 
   return {
     title: doc.name,
+    subtitle: doc.subtitle,
     category: titleCase(doc.category),
     description: doc.summary,
     syntax: doc.syntax,
@@ -333,6 +354,7 @@ module.exports = {
   callingConventions,
   getLocalDoc,
   getInstructionDoc,
+  resolveInstructionDoc,
   getRegisterDoc,
   getDirectiveDoc,
   getSectionDoc,

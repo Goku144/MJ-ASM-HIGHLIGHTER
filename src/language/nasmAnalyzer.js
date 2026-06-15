@@ -103,6 +103,7 @@ class NasmAnalyzer {
     let currentSection = ".text";
     let currentSectionKind = "code";
     let currentStruct = null;
+    let currentParentLabel = null;
 
     for (let lineNumber = 0; lineNumber < lines.length; lineNumber += 1) {
       const textLine = lines[lineNumber];
@@ -176,6 +177,10 @@ class NasmAnalyzer {
         for (let bodyLine = lineNumber + 1; bodyLine < multiLineMacro.endLine; bodyLine += 1) {
           const bodyLabel = parseLabel(codePortion(lines[bodyLine]), bodyLine, fileUri, currentSection, currentSectionKind);
           if (bodyLabel && bodyLabel.kind === "macroLocalLabel") {
+            bodyLabel.symbol.source = source;
+            bodyLabel.symbol.macro = multiLineMacro.name;
+            bodyLabel.symbol.macroStartLine = multiLineMacro.startLine;
+            bodyLabel.symbol.macroEndLine = multiLineMacro.endLine;
             table.addMacroLocalLabel(bodyLabel.symbol);
           }
         }
@@ -233,9 +238,11 @@ class NasmAnalyzer {
         } else if (label.kind === "macroLocalLabel") {
           table.addMacroLocalLabel(label.symbol);
         } else if (label.kind === "localLabel") {
+          label.symbol.parent = currentParentLabel;
           table.addLocalLabel(label.symbol);
         } else {
           table.addLabel(label.symbol);
+          currentParentLabel = label.symbol.name;
         }
       }
     }
@@ -259,8 +266,7 @@ function readDocumentText(document) {
 }
 
 function codePortion(text) {
-  const state = scanLine(text);
-  return text.slice(0, state.commentStart);
+  return splitCodeAndComment(text).code;
 }
 
 function parseInclude(code) {
@@ -581,10 +587,10 @@ function classifySection(sectionName) {
 
 function scanLine(text) {
   const stringRanges = [];
-  const commentStart = findCommentStart(text);
+  const split = splitCodeAndComment(text);
   let quote = null;
   let start = 0;
-  const codeEnd = commentStart >= 0 ? commentStart : text.length;
+  const codeEnd = split.commentStart >= 0 ? split.commentStart : text.length;
 
   for (let i = 0; i < codeEnd; i += 1) {
     const char = text[i];
@@ -612,19 +618,20 @@ function scanLine(text) {
   return { commentStart: codeEnd, stringRanges };
 }
 
-function findCommentStart(line) {
+function splitCodeAndComment(line) {
+  const text = String(line || "");
   let quote = null;
   let escaped = false;
 
-  for (let i = 0; i < line.length; i += 1) {
-    const ch = line[i];
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
 
     if (escaped) {
       escaped = false;
       continue;
     }
 
-    if (ch === "\\") {
+    if (ch === "\\" && quote) {
       escaped = true;
       continue;
     }
@@ -642,11 +649,23 @@ function findCommentStart(line) {
     }
 
     if (ch === ";") {
-      return i;
+      return {
+        code: text.slice(0, i),
+        comment: text.slice(i),
+        commentStart: i
+      };
     }
   }
 
-  return -1;
+  return {
+    code: text,
+    comment: "",
+    commentStart: -1
+  };
+}
+
+function findCommentStart(line) {
+  return splitCodeAndComment(line).commentStart;
 }
 
 function range(line, character, length) {
@@ -672,6 +691,7 @@ module.exports = {
   CODE_SECTIONS,
   DATA_SECTIONS,
   classifySection,
+  splitCodeAndComment,
   codePortion,
   scanLine,
   findCommentStart,

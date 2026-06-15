@@ -346,8 +346,17 @@
     "sectionAttributes": {
       "patterns": [
         {
+          "name": "meta.section.attribute.align.asm.nasm",
+          "match": "(?i)\\b(align)(\\s*)(=)(\\s*)(\\d+)\\b",
+          "captures": {
+            "1": { "name": "storage.modifier.section.attribute.asm.nasm storage.modifier.section.attribute.nasm" },
+            "3": { "name": "keyword.operator.assignment.asm.nasm keyword.operator.asm.nasm" },
+            "5": { "name": "constant.numeric.integer.asm.nasm constant.numeric.asm.nasm" }
+          }
+        },
+        {
           "name": "storage.modifier.section.attribute.asm.nasm storage.modifier.section.attribute.nasm",
-          "match": "(?i)\\b(?:align\\s*=\\s*\\d+|noalloc|noexec|nowrite|progbits|alloc|exec|write|nobits)\\b"
+          "match": "(?i)\\b(?:noalloc|noexec|nowrite|progbits|alloc|exec|write|nobits)\\b"
         }
       ]
     },
@@ -439,11 +448,11 @@
       "patterns": [
         {
           "name": "keyword.mnemonic.instruction.asm.nasm keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
-          "match": "(?i)\\b(?:adc|add|and|bsf|bsr|bt|btc|btr|bts|call|cbw|cdq|cdqe|clc|cld|cli|cmc|cmov[a-z]+|cmp|cmps[bwdq]?|cmpxchg(?:8b|16b)?|cpuid|cqo|cwd|cwde|dec|div|enter|hlt|idiv|imul|in|inc|int|iretq?|ja|jae|jb|jbe|jc|jcxz|je|jecxz|jg|jge|jl|jle|jmp|jna|jnae|jnb|jnbe|jnc|jne|jng|jnge|jnl|jnle|jno|jnp|jns|jnz|jo|jp|jpe|jpo|jrcxz|js|jz|lahf|lea|leave|lock|lods[bwdq]?|loop(?:e|ne|nz|z)?|mov|movs[bwdq]?|movsx|movsxd|movzx|mul|neg|nop|not|or|out|pop|popf?q?|push|pushf?q?|rcl|rcr|retf?|retn|rol|ror|sahf|sal|sar|sbb|scas[bwdq]?|set[a-z]+|shl|shld|shr|shrd|stc|std|sti|stos[bwdq]?|sub|syscall|sysenter|sysexit|sysret|test|ud2|wait|xadd|xchg|xlatb?|xor)\\b"
+          "match": "(?i)\\b(?:adc|add|and|bsf|bsr|bt|btc|btr|bts|call|cbw|cdq|cdqe|clc|cld|cli|cmc|cmov(?:a|ae|b|be|c|e|g|ge|l|le|na|nae|nb|nbe|nc|ne|ng|nge|nl|nle|no|np|ns|nz|o|p|pe|po|s|z)|cmp|cmps[bwdq]?|cmpxchg(?:8b|16b)?|cpuid|cqo|cwd|cwde|dec|div|enter|hlt|idiv|imul|in|inc|int|iretq?|ja|jae|jb|jbe|jc|jcxz|je|jecxz|jg|jge|jl|jle|jmp|jna|jnae|jnb|jnbe|jnc|jne|jng|jnge|jnl|jnle|jno|jnp|jns|jnz|jo|jp|jpe|jpo|jrcxz|js|jz|lahf|lea|leave|lock|lods[bwdq]?|loop(?:e|ne|nz|z)?|mov|movs[bwdq]?|movsx|movsxd|movzx|mul|neg|nop|not|or|out|pop|popf?q?|push|pushf?q?|rcl|rcr|rep(?:e|ne|nz|z)?|retf?|retn|rol|ror|sahf|sal|sar|sbb|scas[bwdq]?|set(?:a|ae|b|be|c|e|g|ge|l|le|na|nae|nb|nbe|nc|ne|ng|nge|nl|nle|no|np|ns|nz|o|p|pe|po|s|z)|shl|shld|shr|shrd|stc|std|sti|stos[bwdq]?|sub|syscall|sysenter|sysexit|sysret|test|ud2|wait|xadd|xchg|xlatb?|xor)\\b"
         },
         {
           "name": "keyword.mnemonic.instruction.asm.nasm keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
-          "match": "(?i)\\b(?:f2xm1|fabs|faddp?|fbld|fbstp|fchs|fclex|fcmov[a-z]+|fcomip?|fcompp?|fcos|fdivrp?|fdivp?|ffree|fiadd|ficomp?|fidivr?|fidiv|fild|fimul|finit|fisttp|fistp?|fisubr?|fisub|fld|fld1|fldcw|fldenv|fldl2e|fldl2t|fldlg2|fldln2|fldpi|fldz|fmulp?|fnclex|fninit|fnop|fnsave|fnstcw|fnstenv|fnstsw|fpatan|fprem1?|fptan|frndint|frstor|fsave|fscale|fsin|fsincos|fsqrt|fstp?|fstcw|fstenv|fstsw|fsubrp?|fsubp?|ftst|fucomip?|fucompp?|fxam|fxch|fxrstor|fxsave|fxtract|fyl2xp1|fyl2x|emms|movd|movq|padd[bwdq]|pandn?|por|psub[bwdq]|pxor)\\b"
+          "match": "(?i)\\b(?:f2xm1|fabs|faddp?|fbld|fbstp|fchs|fclex|fcmov(?:b|be|e|nb|nbe|ne|nu|u)|fcomip?|fcompp?|fcos|fdivrp?|fdivp?|ffree|fiadd|ficomp?|fidivr?|fidiv|fild|fimul|finit|fisttp|fistp?|fisubr?|fisub|fld|fld1|fldcw|fldenv|fldl2e|fldl2t|fldlg2|fldln2|fldpi|fldz|fmulp?|fnclex|fninit|fnop|fnsave|fnstcw|fnstenv|fnstsw|fpatan|fprem1?|fptan|frndint|frstor|fsave|fscale|fsin|fsincos|fsqrt|fstp?|fstcw|fstenv|fstsw|fsubrp?|fsubp?|ftst|fucomip?|fucompp?|fxam|fxch|fxrstor|fxsave|fxtract|fyl2xp1|fyl2x|emms|movd|movq|padd[bwdq]|pandn?|por|psub[bwdq]|pxor)\\b"
         },
         {
           "name": "keyword.mnemonic.instruction.asm.nasm keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
@@ -451,15 +460,19 @@
         },
         {
           "name": "keyword.mnemonic.instruction.asm.nasm keyword.other.instruction.asm.nasm keyword.mnemonic.asm.nasm",
-          "match": "(?i)\\b(?:v[a-z][a-z0-9]*|kadd[bdqw]|kandn?[bdqw]|kmov[bdqw]|knot[bdqw]|kor[bdqw]|kortest[bdqw]|kshiftl[bdqw]|kshiftr[bdqw]|ktest[bdqw]|kunpck[bwdq]+|kx?nor[bdqw]|kxor[bdqw]|aesdec|aesdeclast|aesenc|aesenclast|aesimc|aeskeygenassist|sha1msg1|sha1msg2|sha1nexte|sha1rnds4|sha256msg1|sha256msg2|sha256rnds2|adcx|adox|andn|bextr|blsi|blsmsk|blsr|bzhi|lzcnt|mulx|pdep|pext|popcnt|rorx|sarx|shlx|shrx|tzcnt|rdrand|rdseed|rdtsc|rdtscp|rdmsr|wrmsr|lfence|mfence|sfence|pause|clflush|clflushopt|clwb|invlpg|lgdt|lidt|sgdt|sidt|ltr|str|swapgs|bndcl|bndcu|bndcn|bndmk|bndmov)\\b"
+          "match": "(?i)\\b(?:v(?:addps|divps|movaps|movdqa|movdqu|movups|mulps|pxor|subps|xorps|zeroall|zeroupper)|kadd[bdqw]|kandn?[bdqw]|kmov[bdqw]|knot[bdqw]|kor[bdqw]|kortest[bdqw]|kshiftl[bdqw]|kshiftr[bdqw]|ktest[bdqw]|kunpck(?:bw|wd|dq)|kx?nor[bdqw]|kxor[bdqw]|aesdec|aesdeclast|aesenc|aesenclast|aesimc|aeskeygenassist|sha1msg1|sha1msg2|sha1nexte|sha1rnds4|sha256msg1|sha256msg2|sha256rnds2|adcx|adox|andn|bextr|blsi|blsmsk|blsr|bzhi|lzcnt|mulx|pdep|pext|popcnt|rorx|sarx|shlx|shrx|tzcnt|rdrand|rdseed|rdtsc|rdtscp|rdmsr|wrmsr|lfence|mfence|sfence|pause|clflush|clflushopt|clwb|invlpg|lgdt|lidt|sgdt|sidt|ltr|str|swapgs|bndcl|bndcu|bndcn|bndmk|bndmov)\\b"
         }
       ]
     },
     "brackets": {
       "patterns": [
         {
-          "name": "punctuation.section.brackets.asm.nasm",
-          "match": "[\\[\\]]"
+          "name": "punctuation.section.brackets.begin.asm.nasm punctuation.section.brackets.asm.nasm",
+          "match": "\\["
+        },
+        {
+          "name": "punctuation.section.brackets.end.asm.nasm punctuation.section.brackets.asm.nasm",
+          "match": "\\]"
         },
         {
           "name": "punctuation.section.parens.asm.nasm",
@@ -494,8 +507,24 @@
     "operators": {
       "patterns": [
         {
+          "name": "keyword.operator.assignment.asm.nasm keyword.operator.asm.nasm",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.arithmetic.asm.nasm keyword.operator.asm.nasm",
+          "match": "[+\\-*/]"
+        },
+        {
+          "name": "punctuation.separator.comma.asm.nasm",
+          "match": ","
+        },
+        {
+          "name": "punctuation.separator.segment.asm.nasm",
+          "match": ":"
+        },
+        {
           "name": "keyword.operator.asm.nasm",
-          "match": "(?:\\$\\$|<<|>>|==|!=|<=|>=|&&|\\|\\||[+\\-*/%&|^~=<>!:$])"
+          "match": "(?:\\$\\$|<<|>>|==|!=|<=|>=|&&|\\|\\||[%&|^~<>!$])"
         }
       ]
     }

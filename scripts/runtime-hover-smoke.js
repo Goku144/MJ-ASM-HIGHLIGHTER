@@ -6,6 +6,8 @@ const root = path.resolve(__dirname, "..");
 const fixturePath = path.resolve(root, "examples", "demo.asm");
 const fixtureText = fs.readFileSync(fixturePath, "utf8");
 const registeredHoverProviders = [];
+const registeredDefinitionProviders = [];
+const registeredDeclarationProviders = [];
 
 class Position {
   constructor(line, character) {
@@ -116,6 +118,14 @@ const vscodeMock = {
     registerHoverProvider(selector, provider) {
       registeredHoverProviders.push({ selector, provider });
       return { dispose() {} };
+    },
+    registerDefinitionProvider(selector, provider) {
+      registeredDefinitionProviders.push({ selector, provider });
+      return { dispose() {} };
+    },
+    registerDeclarationProvider(selector, provider) {
+      registeredDeclarationProviders.push({ selector, provider });
+      return { dispose() {} };
     }
   }
 };
@@ -135,12 +145,27 @@ extension.activate({ subscriptions: [] });
 if (registeredHoverProviders.length !== 1) {
   throw new Error(`Expected exactly one hover provider, got ${registeredHoverProviders.length}`);
 }
+if (registeredDefinitionProviders.length !== 1) {
+  throw new Error(`Expected exactly one definition provider, got ${registeredDefinitionProviders.length}`);
+}
+if (registeredDeclarationProviders.length !== 1) {
+  throw new Error(`Expected exactly one declaration provider, got ${registeredDeclarationProviders.length}`);
+}
 
 const { selector, provider } = registeredHoverProviders[0];
 const selectorText = JSON.stringify(selector);
 for (const expected of ["nasmx64", "asm", "**/*.asm"]) {
   if (!selectorText.includes(expected)) {
     throw new Error(`Hover selector should include ${expected}`);
+  }
+}
+
+for (const registration of [...registeredDefinitionProviders, ...registeredDeclarationProviders]) {
+  const navigationSelectorText = JSON.stringify(registration.selector);
+  for (const expected of ["nasmx64", "asm", "**/*.asm"]) {
+    if (!navigationSelectorText.includes(expected)) {
+      throw new Error(`Navigation selector should include ${expected}`);
+    }
   }
 }
 
@@ -153,8 +178,10 @@ const cases = [
   { token: "BUFFER_SIZE", lineIncludes: "resb BUFFER_SIZE" },
   { token: "prologue", lineIncludes: "prologue 32" },
   { token: ".data", lineIncludes: "section .data" },
+  { token: "align", lineIncludes: "section .data align=16" },
   { token: "db", lineIncludes: "message:" },
-  { token: "qword", lineIncludes: "mov qword [buffer]" }
+  { token: "qword", lineIncludes: "mov qword [buffer]" },
+  { token: "leave", lineIncludes: "leave" }
 ];
 
 for (const testCase of cases) {

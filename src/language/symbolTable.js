@@ -45,7 +45,9 @@ class SymbolTable {
     this.multiLineMacros = new Map();
     this.labels = new Map();
     this.localLabels = new Map();
+    this.localLabelDefinitions = new Map();
     this.macroLocalLabels = new Map();
+    this.macroLocalLabelDefinitions = new Map();
     this.numericLabels = new Map();
     this.externs = new Map();
     this.globals = new Map();
@@ -87,6 +89,9 @@ class SymbolTable {
       }
       this.numericLabels.get(name).push(...symbols);
     }
+
+    mergeListMap(this.localLabelDefinitions, other.localLabelDefinitions);
+    mergeListMap(this.macroLocalLabelDefinitions, other.macroLocalLabelDefinitions);
   }
 
   addMacro(symbol) {
@@ -120,10 +125,12 @@ class SymbolTable {
 
   addLocalLabel(symbol) {
     storeCaseInsensitive(this.localLabels, symbol.name, symbol);
+    storeList(this.localLabelDefinitions, symbol.name, symbol);
   }
 
   addMacroLocalLabel(symbol) {
     storeCaseInsensitive(this.macroLocalLabels, symbol.name, symbol);
+    storeList(this.macroLocalLabelDefinitions, symbol.name, symbol);
   }
 
   addNumericLabel(symbol) {
@@ -161,6 +168,14 @@ class SymbolTable {
     return map ? map.get(name) || map.get(normalizeName(name)) : undefined;
   }
 
+  lookupAll(mapName, name) {
+    const value = this.lookup(mapName, name);
+    if (!value) {
+      return [];
+    }
+    return Array.isArray(value) ? value : [value];
+  }
+
   lookupSymbol(name) {
     return (
       this.lookup("macros", name) ||
@@ -195,6 +210,15 @@ function setWithCurrentSourcePrecedence(map, name, symbol) {
     return;
   }
   map.set(name, symbol);
+}
+
+function mergeListMap(target, source) {
+  for (const [name, symbols] of source) {
+    if (!target.has(name)) {
+      target.set(name, []);
+    }
+    target.get(name).push(...symbols);
+  }
 }
 
 function caseInsensitiveNameSet(map) {

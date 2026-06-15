@@ -26,7 +26,7 @@ Included macro functions and constants are merged into the including document's 
 | `1f`, `1b` | `variable.numericLabel` |
 | `%%again:` | `variable.definition.macroLocal` |
 | `%%again` | `variable.macroLocal` |
-| `section .rodata align=16` | `.rodata` as `namespace.section`, `align=16` as `modifier` |
+| `section .rodata align=16` | `.rodata` as `namespace.section`, `align` as `modifier`, `=` as `operator`, `16` as `number` |
 | `global asm_hello:function` | `asm_hello` as `function.global.exported`, `:function` as `modifier.code` |
 | `global global_counter:data` | `global_counter` as `variable.global.exported`, `:data` as `modifier.data` |
 | `extern printf` | `printf` as `function.global.external` |
@@ -76,6 +76,30 @@ storage.type.size.asm.nasm
 storage.modifier.addressing.asm.nasm
 storage.type.data.asm.nasm
 keyword.directive.storage.asm.nasm
+punctuation.section.brackets.begin.asm.nasm
+punctuation.section.brackets.end.asm.nasm
+keyword.operator.arithmetic.asm.nasm
+keyword.operator.assignment.asm.nasm
+punctuation.separator.comma.asm.nasm
+punctuation.separator.segment.asm.nasm
+```
+
+Examples:
+
+```text
+section .data align=16
+              align -> storage.modifier.section.attribute.asm.nasm
+                   = -> keyword.operator.assignment.asm.nasm
+                    16 -> constant.numeric.integer.asm.nasm
+
+[buffer + rax * 2 + 16]
+        + and * -> keyword.operator.arithmetic.asm.nasm
+        numbers -> constant.numeric.integer.asm.nasm
+
+[fs:0x28]
+fs -> variable.language.register.segment.asm.nasm
+:  -> punctuation.separator.segment.asm.nasm
+0x28 -> constant.numeric.hex.asm.nasm
 ```
 
 Use `Developer: Inspect Editor Tokens and Scopes` in VS Code to verify both the semantic token and TextMate fallback scope under the cursor.

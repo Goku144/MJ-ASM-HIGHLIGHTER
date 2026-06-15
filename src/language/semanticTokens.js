@@ -17,6 +17,7 @@ const {
   parseSymbolDirective,
   scanLine
 } = require("./nasmAnalyzer");
+const { getGrammarInstructionMnemonics } = require("./instructionMnemonics");
 
 const numberPattern =
   /(?<![A-Za-z0-9_$?@])-?(?:\d+\.\d*|\.\d+)(?:[eE][+-]?\d+)?\b|(?<![A-Za-z0-9_$?@])-?\d+[eE][+-]?\d+\b|(?<![A-Za-z0-9_$?@])-?(?:0x[0-9A-Fa-f]+|\$[0-9A-Fa-f]+|[0-9][0-9A-Fa-f]*h)\b|(?<![A-Za-z0-9_$?@])-?(?:0b[01]+|[01]+b)\b|(?<![A-Za-z0-9_$?@])-?(?:0o[0-7]+|[0-7]+o|[0-7]+q|0[0-7]+)\b|(?<![A-Za-z0-9_$?@])-?\d+\b/g;
@@ -152,141 +153,13 @@ const DATA_DECLARATIONS = new Set([
 const SIZE_SPECIFIERS = new Set(["byte", "word", "dword", "qword", "tword", "oword", "yword", "zword"]);
 const ADDRESSING_MODIFIERS = new Set(["ptr", "short", "near", "far", "rel", "abs", "strict", "nosplit", "wrt"]);
 const INSTRUCTION_PREFIXES = new Set(["lock", "rep", "repe", "repne", "repz", "repnz"]);
-const SECTION_ATTRIBUTE = /\b(?:align\s*=\s*\d+|noalloc|noexec|nowrite|progbits|alloc|exec|write|nobits)\b/gi;
+const SECTION_ALIGN_ATTRIBUTE = /\b(align)(\s*)(=)(\s*)(\d+)\b/gi;
+const SECTION_ATTRIBUTE = /\b(?:noalloc|noexec|nowrite|progbits|alloc|exec|write|nobits)\b/gi;
 
 const REGISTERS =
   /^(?:r(?:ax|bx|cx|dx|si|di|bp|sp|ip)|e(?:ax|bx|cx|dx|si|di|bp|sp|ip)|[abcd][hl]|[abcd]x|[sb]p|[sd]i|ip|spl|bpl|sil|dil|r(?:[8-9]|1[0-5])(?:d|w|b)?|cs|ds|es|fs|gs|ss|cr[02348]|dr[0-3]|dr6|dr7|mm[0-7]|(?:xmm|ymm|zmm)(?:[0-9]|[12][0-9]|3[01])|st[0-7]|k[0-7]|bnd[0-3])$/i;
 
-const INSTRUCTIONS = new Set([
-  "adc",
-  "add",
-  "and",
-  "bt",
-  "btc",
-  "btr",
-  "bts",
-  "bsf",
-  "bsr",
-  "bndcl",
-  "bndcn",
-  "bndcu",
-  "bndmk",
-  "bndmov",
-  "call",
-  "cmp",
-  "cmpxchg",
-  "cpuid",
-  "dec",
-  "div",
-  "enter",
-  "hlt",
-  "idiv",
-  "imul",
-  "inc",
-  "int",
-  "iret",
-  "iretq",
-  "ja",
-  "jae",
-  "jb",
-  "jbe",
-  "jc",
-  "je",
-  "jg",
-  "jge",
-  "jl",
-  "jle",
-  "jmp",
-  "jne",
-  "jnz",
-  "jz",
-  "lea",
-  "leave",
-  "loop",
-  "loope",
-  "loopne",
-  "mov",
-  "movsx",
-  "movsxd",
-  "movzx",
-  "mul",
-  "neg",
-  "nop",
-  "not",
-  "or",
-  "out",
-  "pop",
-  "push",
-  "ret",
-  "retn",
-  "rol",
-  "ror",
-  "sal",
-  "sar",
-  "sbb",
-  "shl",
-  "shr",
-  "sub",
-  "syscall",
-  "sysenter",
-  "sysexit",
-  "sysret",
-  "test",
-  "ud2",
-  "wait",
-  "xadd",
-  "xchg",
-  "xor",
-  "cld",
-  "std",
-  "stosb",
-  "movsb",
-  "lodsb",
-  "scasb",
-  "cmpsb",
-  "finit",
-  "fld",
-  "fld1",
-  "fst",
-  "fstp",
-  "fadd",
-  "faddp",
-  "fsub",
-  "fmul",
-  "fdiv",
-  "emms",
-  "movq",
-  "movd",
-  "movdqa",
-  "movdqu",
-  "movaps",
-  "movups",
-  "movapd",
-  "addps",
-  "addpd",
-  "subps",
-  "mulps",
-  "divps",
-  "pxor",
-  "pand",
-  "por",
-  "paddd",
-  "vzeroall",
-  "vpxor",
-  "vaddps",
-  "vmovups",
-  "vmovdqa",
-  "kmovw",
-  "ktestw",
-  "aesenc",
-  "sha256rnds2",
-  "lock",
-  "rep",
-  "repe",
-  "repne",
-  "repz",
-  "repnz"
-]);
+const INSTRUCTIONS = new Set(getGrammarInstructionMnemonics());
 
 function createSemanticTokensProvider(vscode, analyzer) {
   const legend = new vscode.SemanticTokensLegend(tokenTypes, tokenModifiers);
@@ -433,6 +306,11 @@ function collectSemanticTokens(document, table) {
 }
 
 function addSectionAttributes(code, add) {
+  scanRegex(code, SECTION_ALIGN_ATTRIBUTE, (match) => {
+    add(match.index, match[1].length, "modifier");
+    add(match.index + match[1].length + match[2].length, match[3].length, "operator");
+  });
+
   scanRegex(code, SECTION_ATTRIBUTE, (match) => {
     add(match.index, match[0].length, "modifier");
   });
@@ -649,15 +527,7 @@ function registerModifiers(lower) {
 }
 
 function isInstruction(word) {
-  return (
-    INSTRUCTIONS.has(word) ||
-    /^cmov[a-z]+$/.test(word) ||
-    /^j[a-z]+$/.test(word) ||
-    /^set[a-z]+$/.test(word) ||
-    /^v[a-z][a-z0-9]*$/.test(word) ||
-    /^f[a-z][a-z0-9]*$/.test(word) ||
-    /^(?:movs|lods|stos|scas|cmps)[bwdq]?$/.test(word)
-  );
+  return INSTRUCTIONS.has(word);
 }
 
 function addToken(tokens, occupied, line, start, length, type, modifiers = []) {

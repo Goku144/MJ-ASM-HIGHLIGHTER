@@ -1,5 +1,7 @@
 "use strict";
 
+const { splitCodeAndComment } = require("./nasmAnalyzer");
+
 const COMPLEX_MACRO_DIRECTIVES = /^\s*%(?:rep|endrep|if|ifn|ifdef|ifndef|ifmacro|ifnmacro|ifctx|ifnctx|ifidn|ifnidn|ifidni|ifnidni|ifid|ifnid|ifnum|ifnnum|ifstr|ifnstr|iftoken|ifntoken|ifempty|ifnempty|elif|elifn|elifdef|elifndef|elifmacro|elifnmacro|elifctx|elifnctx|elifidn|elifnidn|elifidni|elifnidni|elifid|elifnid|elifnum|elifnnum|elifstr|elifnstr|eliftoken|elifntoken|elifempty|elifnempty|else|endif|assign|iassign|rotate|macro|imacro|endmacro)\b/i;
 
 function expandMacroPreview(macroSymbol, callArguments, options = {}) {
@@ -79,8 +81,7 @@ function splitMacroArguments(text) {
 }
 
 function parseMacroCallArguments(lineText, token) {
-  const commentStart = findCommentStart(lineText);
-  const code = lineText.slice(0, commentStart);
+  const { code } = splitCodeAndComment(lineText);
   const tokenIndex = findTokenIndex(code, token);
   if (tokenIndex < 0) {
     return [];
@@ -129,43 +130,6 @@ function findTokenIndex(code, token) {
   const regex = new RegExp(`(^|\\s)(${escaped})(?=\\s|$)`, "i");
   const match = code.match(regex);
   return match ? match.index + match[0].lastIndexOf(match[2]) : -1;
-}
-
-function findCommentStart(line) {
-  let quote = null;
-  let escaped = false;
-
-  for (let i = 0; i < line.length; i += 1) {
-    const char = line[i];
-
-    if (escaped) {
-      escaped = false;
-      continue;
-    }
-
-    if (char === "\\") {
-      escaped = true;
-      continue;
-    }
-
-    if (quote) {
-      if (char === quote) {
-        quote = null;
-      }
-      continue;
-    }
-
-    if (char === "\"" || char === "'" || char === "`") {
-      quote = char;
-      continue;
-    }
-
-    if (char === ";") {
-      return i;
-    }
-  }
-
-  return line.length;
 }
 
 function escapeRegExp(value) {

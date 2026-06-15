@@ -26,14 +26,16 @@ The extension does not claim `.s` or `.S` by default because those files are oft
 - Normal labels, dot-local labels, macro-local labels, and numeric labels are classified separately.
 - `global symbol:function`, `global symbol:data`, and `extern symbol` get exported/external semantic modifiers.
 - NASM `struc` names, fields such as `Person.age`, and generated `Person_size` constants are indexed.
+- Ctrl+Click, F12, and right-click Go to Definition work for labels, local labels, numeric labels, macros, constants, structs, externs/globals, and simple included files.
 - Hovering over `%define`, `%xdefine`, `%assign`, and simple `%macro` uses shows a lightweight macro expansion preview.
 - `%include "file.inc"` symbols participate in semantic highlighting and hover, so macros/constants defined in include files can color and document call sites in the including file.
-- Hover documentation is local to the extension for common instructions, registers, directives, sections, Linux x86-64 syscalls, and System V AMD64 register roles.
+- Hover documentation is local to the extension for every grammar-recognized instruction mnemonic, plus registers, directives, sections, Linux x86-64 syscalls, and System V AMD64 register roles.
 - Symbols use semantic token type `variable`, and macro parameters use `parameter`.
 - The TextMate grammar still uses standard C/C++-compatible scope families as a fallback.
 - Instructions use keyword-like scopes such as `keyword.mnemonic.asm.nasm` and `keyword.other.instruction.asm.nasm`.
 - Registers use support/variable scopes such as `variable.language.register.asm.nasm` and `support.variable.register.asm.nasm`.
-- Numbers, strings, comments, labels, preprocessor directives, macro parameters, sections, section attributes, data declarations, size specifiers, brackets, and operators are scoped for normal VS Code themes.
+- Numbers, strings, comments, labels, preprocessor directives, macro parameters, sections, section attributes, data declarations, size specifiers, brackets, commas, segment separators, and arithmetic/assignment operators are scoped for normal VS Code themes.
+- Section attributes such as `align=16` are split so `align`, `=`, and `16` keep separate modifier, operator, and number styling.
 - Case-insensitive matching for common NASM spelling styles like `mov`, `MOV`, and `Mov`.
 - Identifier-safe matching so words like `movement` and `myraxvalue` are not partially highlighted.
 - Snippets for Linux entry points, syscalls, functions, macros, defines, includes, sections, and conditionals.
@@ -87,6 +89,7 @@ _start:
 
 ```sh
 npm install
+npm run check:instruction-docs
 npm run validate
 npm run package
 ```
@@ -98,7 +101,7 @@ The `package` script uses `@vscode/vsce` to create a `.vsix` file.
 1. Run `npm run package`.
 2. Open the VS Code Extensions panel.
 3. Select **Install from VSIX...**.
-4. Choose the generated `mj-asm-highlighter-0.1.3.vsix`.
+4. Choose the generated `mj-asm-highlighter-1.0.1.vsix`.
 
 ## Refresh After Installing
 
@@ -141,6 +144,32 @@ Resolution checks the current file directory, workspace folders, configured incl
 ```
 
 The analyzer keeps a visited-file set and a max include depth, so recursive include chains cannot loop forever. Editing `.asm`, `.nasm`, or `.inc` files clears the include cache and requests semantic-token refresh.
+
+## Go to Definition
+
+MJ ASM Highlighter supports Ctrl+Click / F12 navigation for:
+
+- labels
+- local labels
+- numeric labels
+- macros
+- constants
+- included macros/constants
+- structs and struct fields
+- extern/global declarations
+
+For cross-file macros, configure include paths with:
+
+```json
+{
+  "mjAsmHighlighter.includePaths": [
+    "${workspaceFolder}/include",
+    "${workspaceFolder}/interface/Asm"
+  ]
+}
+```
+
+See [docs/go-to-definition.md](docs/go-to-definition.md) for supported symbol forms and limitations.
 
 ## Macro Expansion Hover
 
@@ -195,14 +224,24 @@ If `PrintStr.inc` defines `%macro print_str_macro 2`, hovering the call shows th
 Hover documentation is local and useful without opening a website. Test:
 
 - Hover over `mov`
+- Hover over `leave`
+- Hover over `cmp`
+- Hover over `je`
+- Hover over `movaps`
+- Hover over `vaddps`
+- Hover over `fld`
 - Hover over `rax`
 - Hover over `%define`
 - Hover over `.data`
 - Hover over `db`
 - Hover over `qword`
 - Hover over `syscall`
+- Hover over `align` in `section .data align=16`
+- Hover over `noexec` in `.note.GNU-stack` attributes
 - Hover over `rdi`
 - Hover over `.note.GNU-stack`
+
+The instruction coverage gate is `npm run check:instruction-docs`; it compares the TextMate grammar mnemonic list with `data/nasm-instructions.json`, including alias entries such as `je` -> `jz`.
 
 ## Macro expansion hover
 
@@ -412,7 +451,7 @@ punctuation.definition.directive.asm.nasm
 variable.other.asm.nasm
 ```
 
-See [docs/token-scopes.md](docs/token-scopes.md) for the semantic token and TextMate fallback mapping, [docs/local-hover-docs.md](docs/local-hover-docs.md) for local hover documentation, and [docs/include-resolution.md](docs/include-resolution.md) for include search behavior.
+See [docs/token-scopes.md](docs/token-scopes.md) for the semantic token and TextMate fallback mapping, [docs/local-hover-docs.md](docs/local-hover-docs.md) for local hover documentation, [docs/include-resolution.md](docs/include-resolution.md) for include search behavior, and [docs/go-to-definition.md](docs/go-to-definition.md) for navigation support.
 
 ## Project Layout
 
@@ -434,9 +473,11 @@ mj-asm-highlighter/
     token-scopes.md
     local-hover-docs.md
     include-resolution.md
+    go-to-definition.md
   src/
     extension.js
     language/
+      definitionProvider.js
       grammar-support.js
       hoverProvider.js
       semanticTokens.js
@@ -449,6 +490,7 @@ mj-asm-highlighter/
       diagnostics.js
     test/
       analyzer.test.js
+      definitionProvider.test.js
       hoverProvider.test.js
       semanticTokens.test.js
   syntaxes/
@@ -459,9 +501,14 @@ mj-asm-highlighter/
     demo.asm
     macros.inc
     PrintStr.inc
+    GoToDefinition.inc
     cross-file-macro-test.asm
+    go-to-definition-test.asm
+    color-operator-number-test.asm
+    instruction-hover-test.asm
   scripts/
     validate.js
+    check-instruction-docs.js
   .vscodeignore
   .gitignore
 ```
@@ -475,4 +522,5 @@ Known limits:
 - Macro expansion preview is simple `%1`, `%2`, `%3` substitution.
 - Complex preprocessor logic such as `%rep`, `%if`, `%rotate`, nested macros, or recursive expansion may show the raw macro body only.
 - Include resolution supports normal quoted include paths, not every NASM include edge case.
+- Go to Definition uses the lightweight symbol index; external functions jump to `extern` declarations, not system libraries.
 # MJ-ASM-HIGHLIGHTER

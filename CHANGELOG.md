@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.1
+
+- Added VS Code Go to Definition and Go to Declaration support for NASM labels, local labels, numeric labels, macro-local labels, macros, constants, structs, fields, externs, globals, and include-resolved symbols.
+- Added definition navigation examples, tests, and documentation.
+
+## 1.0.0
+
+- Added complete local hover documentation coverage for every instruction mnemonic recognized by the grammar, with alias support for equivalent condition-code and prefix variants.
+- Added `examples/instruction-hover-test.asm` as a manual hover coverage fixture.
+- Added local hover docs for `leave`, `enter`, `test`, carry arithmetic, division helpers, extension moves, loop instructions, interrupts, CPU ID, timestamp, and halt instructions.
+- Added local hover docs for `align` as both a directive and section attribute, plus `.note.GNU-stack` attributes `noalloc`, `noexec`, `nowrite`, and `progbits`.
+- Split `align=16` tokenization into `align`, `=`, and numeric `16` for better theme-friendly modifier/operator/number coloring.
+- Added TextMate scopes for arithmetic operators, assignment, commas, segment separators, and bracket begin/end punctuation.
+- Added a visual operator/number acceptance example and automated checks for semantic number priority.
+
 ## 0.1.3
 
 - Added include-aware macro/constant hover for simple `%include "file.inc"` files.
