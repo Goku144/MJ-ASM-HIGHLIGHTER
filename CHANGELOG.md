@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2
+
+- Removed redundant explicit activation events and kept runtime activation through contributed NASM language and command declarations.
+- Added regression validation for cross-file NASM macro recognition.
+- Added documentation for cross-file macro testing.
+- Preserved include-file macro highlighting and navigation behavior.
+
 ## 1.0.1
 
 - Added VS Code Go to Definition and Go to Declaration support for NASM labels, local labels, numeric labels, macro-local labels, macros, constants, structs, fields, externs, globals, and include-resolved symbols.

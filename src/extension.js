@@ -6,6 +6,7 @@ const { createSemanticTokensProvider } = require("./language/semanticTokens");
 const { createHoverProvider } = require("./language/hoverProvider");
 const { createDefinitionProvider, createDeclarationProvider } = require("./language/definitionProvider");
 const { NASM_DOCUMENT_SELECTOR, registerGrammarSupport } = require("./language/grammar-support");
+const { registerDiagnostics } = require("./language/diagnostics");
 
 function activate(context) {
   const analyzer = new NasmAnalyzer({ vscode });
@@ -15,6 +16,7 @@ function activate(context) {
   const declarationProvider = createDeclarationProvider(vscode, analyzer);
 
   registerGrammarSupport(context, vscode, analyzer, semanticProvider.refresh);
+  registerDiagnostics(context, vscode, analyzer);
 
   context.subscriptions.push(
     vscode.languages.registerDocumentSemanticTokensProvider(NASM_DOCUMENT_SELECTOR, semanticProvider, semanticProvider.legend),

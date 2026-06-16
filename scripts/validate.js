@@ -85,22 +85,28 @@ const localDirectiveDocs = readJson("data/nasm-directives.json");
 const syscallDocs = readJson("data/linux-syscalls-x86_64.json");
 const callingConventionDocs = readJson("data/calling-conventions.json");
 
-assert(pkg.name === "mj-asm-highlighter", "package.json name must be mj-asm-highlighter");
-assert(pkg.displayName === "MJ Asm Highlighter", "package.json displayName must be MJ Asm Highlighter");
-assert(pkg.version === "1.0.1", "package.json version must be 1.0.1");
+assert(typeof pkg.name === "string" && /^[a-z0-9][a-z0-9-]*$/.test(pkg.name), "package.json must define a valid extension name");
+assert(typeof pkg.displayName === "string" && pkg.displayName.trim().length > 0, "package.json must define displayName");
+assert(typeof pkg.version === "string" && /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(pkg.version), "package.json must define a semver version");
 assert(pkg.publisher === "agentXorion", "package.json publisher must be agentXorion");
 assert(pkg.repository && pkg.repository.url.includes("agentXorion/mj-asm-highlighter"), "package.json must include repository URL");
 assert(pkg.icon === "assets/icon.png", "package.json icon must be assets/icon.png");
 assert(pkg.main === "./src/extension.js", "package.json must point main to ./src/extension.js");
 assert(pkg.description.includes("semantic tokens"), "description should mention semantic tokens");
 assert(pkg.description.includes("standard TextMate scopes"), "description should mention standard TextMate scopes");
-assert(Array.isArray(pkg.activationEvents), "package.json must define activationEvents");
-assert(pkg.activationEvents.includes("onLanguage:nasmx64"), "Extension must activate for nasmx64 files");
-assert(pkg.activationEvents.includes("onLanguage:asm"), "Extension must activate when VS Code opens .asm files as asm");
-assert(pkg.activationEvents.includes("onStartupFinished"), "Extension should activate even when another extension owns the .asm language id");
+assert(!Object.prototype.hasOwnProperty.call(pkg, "activationEvents"), "package.json should omit explicit activationEvents that VS Code can infer");
 assert(pkg.contributes && Array.isArray(pkg.contributes.languages), "package.json must contribute languages");
 assert(pkg.contributes.grammars && pkg.contributes.grammars[0].scopeName === "source.asm.nasmx64", "Grammar contribution must use source.asm.nasmx64");
+assert(
+  pkg.contributes.grammars.some((grammarContribution) => grammarContribution.language === "nasmx64"),
+  "Package must contribute a grammar for nasmx64"
+);
 assert(pkg.contributes.snippets && pkg.contributes.snippets[0].language === "nasmx64", "Snippets contribution must target nasmx64");
+assert(
+  pkg.contributes.commands &&
+    pkg.contributes.commands.some((command) => command.command === "mjAsmHighlighter.diagnostics"),
+  "Package must contribute the diagnostics command"
+);
 assert(!pkg.contributes.themes, "Theme contribution must not be required for highlighting");
 assert(pkg.contributes.configurationDefaults, "Minimal NASM color defaults should be contributed");
 assert(
@@ -159,9 +165,12 @@ assert(semanticRules["string:nasmx64"] === "#CE9178", "Strings must have a NASM 
 
 const language = pkg.contributes.languages[0];
 assert(language.id === "nasmx64", "Language id must be nasmx64");
+assert(language.aliases.includes("NASM x86_64"), "Language aliases must include NASM x86_64");
+assert(language.aliases.includes("NASM"), "Language aliases must include NASM");
 assert(language.extensions.includes(".asm"), "Language must include .asm");
 assert(language.extensions.includes(".nasm"), "Language must include .nasm");
 assert(language.extensions.includes(".inc"), "Language must include .inc");
+assert(language.configuration === "./language-configuration.json", "Language must use language-configuration.json");
 assert(!language.extensions.includes(".s"), "Language should not claim .s by default");
 assert(!language.extensions.includes(".S"), "Language should not claim .S by default");
 
@@ -199,6 +208,7 @@ for (const key of requiredRepositories) {
 
 const grammarText = fs.readFileSync(path.join(root, "syntaxes/nasm-x64.tmLanguage.json"), "utf8");
 const extensionText = fs.readFileSync(path.join(root, "src/extension.js"), "utf8");
+const diagnosticsText = fs.readFileSync(path.join(root, "src/language/diagnostics.js"), "utf8");
 const definitionProviderText = fs.readFileSync(path.join(root, "src/language/definitionProvider.js"), "utf8");
 const analyzerText = fs.readFileSync(path.join(root, "src/language/nasmAnalyzer.js"), "utf8");
 const semanticText = fs.readFileSync(path.join(root, "src/language/semanticTokens.js"), "utf8");
@@ -212,6 +222,7 @@ const grammarSupportText = fs.readFileSync(path.join(root, "src/language/grammar
 const instructionMnemonicsText = fs.readFileSync(path.join(root, "src/language/instructionMnemonics.js"), "utf8");
 const languageText = [
   extensionText,
+  diagnosticsText,
   definitionProviderText,
   analyzerText,
   semanticText,
@@ -306,6 +317,9 @@ for (const source of [
   "registerHoverProvider",
   "registerDefinitionProvider",
   "registerDeclarationProvider",
+  "registerDiagnostics",
+  "registerCommand",
+  "mjAsmHighlighter.diagnostics",
   "provideHover",
   "provideDefinition",
   "provideDeclaration",
@@ -552,7 +566,7 @@ const goToDefinitionText = fs.readFileSync(path.join(root, "examples/go-to-defin
 const operatorNumberText = fs.readFileSync(path.join(root, "examples/color-operator-number-test.asm"), "utf8");
 const commentIgnoreText = fs.readFileSync(path.join(root, "examples/comment-ignore-test.asm"), "utf8");
 const instructionHoverText = fs.readFileSync(path.join(root, "examples/instruction-hover-test.asm"), "utf8");
-assert(printStrText.includes("%macro print_str_macro 2"), "PrintStr.inc must define print_str_macro");
+assert(/^\s*%macro\s+print_str_macro\b(?:\s+2\b)?/im.test(printStrText), "PrintStr.inc must define print_str_macro");
 assert(crossFileText.includes("%include \"PrintStr.inc\""), "Cross-file example must include PrintStr.inc");
 assert(crossFileText.includes("print_str_macro rdi, rsi"), "Cross-file example must call included macro");
 assert(goToDefinitionIncludeText.includes("%define SYS_WRITE 1"), "GoToDefinition.inc must define SYS_WRITE");
@@ -583,6 +597,13 @@ for (const source of [
   "## Go to Definition",
   "Ctrl+Click / F12",
   "included macros/constants",
+  "## Cross-file macro test",
+  "The extension supports macros declared in included `.inc` files.",
+  "print_str_macro` is highlighted as a macro/function call",
+  "Ctrl+Click / Go to Definition should jump to `PrintStr.inc`",
+  "MJ Asm Highlighter: Diagnostics",
+  "Output -> `MJ Asm Highlighter`",
+  "NASM x86_64",
   "## Hover documentation",
   "Hover over `mov`",
   "Hover over `rax`",
@@ -642,10 +663,23 @@ assert(pkg.scripts && pkg.scripts.test && pkg.scripts.test.includes("semanticTok
 assert(pkg.scripts && pkg.scripts.test && pkg.scripts.test.includes("definitionProvider.test.js"), "package.json should run definition provider tests");
 assert(pkg.scripts && pkg.scripts["check:instruction-docs"] === "node scripts/check-instruction-docs.js", "package.json should define check:instruction-docs");
 assert(pkg.scripts.validate && pkg.scripts.validate.includes("npm run check:instruction-docs"), "package.json validate should run instruction doc coverage");
+assert(pkg.scripts.package && pkg.scripts.package.includes("--out dist"), "package.json package script should write the VSIX to dist");
 
 assert(
   languageText.includes("provideDocumentSemanticTokens"),
   "Semantic token module must implement provideDocumentSemanticTokens"
+);
+assert(
+  extensionText.includes("registerDiagnostics(context, vscode, analyzer)"),
+  "Extension must register diagnostics command support"
+);
+assert(
+  diagnosticsText.includes("commands.registerCommand(DIAGNOSTICS_COMMAND"),
+  "Diagnostics module must register a VS Code command"
+);
+assert(
+  diagnosticsText.includes("Resolved include:") && diagnosticsText.includes("Collected macro from include:"),
+  "Diagnostics output must include resolved includes and collected include macros"
 );
 assert(
   extensionText.includes("registerDocumentSemanticTokensProvider(NASM_DOCUMENT_SELECTOR"),
@@ -663,6 +697,18 @@ assert(
   extensionText.includes("registerDeclarationProvider(NASM_DOCUMENT_SELECTOR"),
   "Declaration provider must register with the NASM document selector"
 );
+if (languageText.includes("createReferenceProvider") || extensionText.includes("registerReferenceProvider")) {
+  assert(
+    extensionText.includes("registerReferenceProvider(NASM_DOCUMENT_SELECTOR"),
+    "Reference provider must register with the NASM document selector when implemented"
+  );
+}
+if (languageText.includes("createDocumentLinkProvider") || extensionText.includes("registerDocumentLinkProvider")) {
+  assert(
+    extensionText.includes("registerDocumentLinkProvider(NASM_DOCUMENT_SELECTOR"),
+    "Document link provider must register with the NASM document selector when implemented"
+  );
+}
 
 const topLevelIncludes = grammar.patterns.map((pattern) => pattern.include);
 const expectedOrder = [

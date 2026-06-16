@@ -8,6 +8,7 @@ const fixtureText = fs.readFileSync(fixturePath, "utf8");
 const registeredHoverProviders = [];
 const registeredDefinitionProviders = [];
 const registeredDeclarationProviders = [];
+const registeredCommands = [];
 
 class Position {
   constructor(line, character) {
@@ -111,6 +112,23 @@ const vscodeMock = {
   Range,
   SemanticTokensBuilder,
   SemanticTokensLegend,
+  commands: {
+    registerCommand(command, callback) {
+      registeredCommands.push({ command, callback });
+      return { dispose() {} };
+    }
+  },
+  window: {
+    activeTextEditor: null,
+    createOutputChannel() {
+      return {
+        appendLine() {},
+        clear() {},
+        show() {},
+        dispose() {}
+      };
+    }
+  },
   languages: {
     registerDocumentSemanticTokensProvider(selector) {
       return { dispose() {}, selector };
@@ -150,6 +168,9 @@ if (registeredDefinitionProviders.length !== 1) {
 }
 if (registeredDeclarationProviders.length !== 1) {
   throw new Error(`Expected exactly one declaration provider, got ${registeredDeclarationProviders.length}`);
+}
+if (!registeredCommands.some((registration) => registration.command === "mjAsmHighlighter.diagnostics")) {
+  throw new Error("Expected diagnostics command registration");
 }
 
 const { selector, provider } = registeredHoverProviders[0];

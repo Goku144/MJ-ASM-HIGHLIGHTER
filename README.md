@@ -101,7 +101,7 @@ The `package` script uses `@vscode/vsce` to create a `.vsix` file.
 1. Run `npm run package`.
 2. Open the VS Code Extensions panel.
 3. Select **Install from VSIX...**.
-4. Choose the generated `mj-asm-highlighter-1.0.1.vsix`.
+4. Choose the generated `.vsix` file from `dist/`.
 
 ## Refresh After Installing
 
@@ -112,6 +112,7 @@ Ctrl+Shift+P -> Developer: Reload Window
 ```
 
 Then open a `.asm`, `.nasm`, or `.inc` file. The bottom-right language mode should be `NASM x86_64`.
+The extension activates automatically for files using the `NASM x86_64` language mode.
 
 ## Semantic Highlighting
 
@@ -144,6 +145,35 @@ Resolution checks the current file directory, workspace folders, configured incl
 ```
 
 The analyzer keeps a visited-file set and a max include depth, so recursive include chains cannot loop forever. Editing `.asm`, `.nasm`, or `.inc` files clears the include cache and requests semantic-token refresh.
+
+## Cross-file macro test
+
+The extension supports macros declared in included `.inc` files.
+
+Example:
+
+```asm
+%include "PrintStr.inc"
+
+section .text
+print_str:
+    print_str_macro rdi, rsi
+    ret
+```
+
+Expected behavior:
+
+- `print_str_macro` is highlighted as a macro/function call.
+- Hover should show macro information if hover support is active.
+- Ctrl+Click / Go to Definition should jump to `PrintStr.inc`.
+- The include file path should be resolved relative to the current file/workspace.
+
+Troubleshooting:
+
+- Run `MJ Asm Highlighter: Diagnostics`.
+- Check Output -> `MJ Asm Highlighter`.
+- Confirm the include file is resolved.
+- Confirm the file language mode is `NASM x86_64`.
 
 ## Go to Definition
 

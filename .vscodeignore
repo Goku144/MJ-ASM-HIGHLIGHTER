@@ -3,6 +3,7 @@
 .vscode/**
 /icon.png
 node_modules/**
+dist/**
 scripts/**
 src/test/**
 test.asm
